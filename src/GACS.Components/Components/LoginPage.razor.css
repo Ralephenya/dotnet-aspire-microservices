@@ -1,0 +1,450 @@
+/* ============================================================
+   LoginPage.razor.css — Scoped styles for the GACS login page
+   Split layout: dark branding panel left | white auth card right
+   ============================================================ */
+
+/* ── ROOT — full viewport split ── */
+.lp-root {
+    display: flex;
+    min-height: 100vh;
+    font-family: var(--fontFamilyBase);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   LEFT — Branding panel
+   ============================================================ */
+.lp-brand {
+    flex: 0 0 50%;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(ellipse 100% 60% at 70% -10%, rgba(15, 108, 189, 0.4) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at -10% 90%, rgba(12, 59, 94, 0.5) 0%, transparent 60%),
+        linear-gradient(160deg, #040F1E 0%, #0A1628 45%, #0C3B5E 100%);
+    display: flex;
+    align-items: center;
+    padding: 60px 56px;
+}
+
+/* Dot-grid overlay */
+.lp-brand-grid-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+    background-size: 32px 32px;
+    pointer-events: none;
+}
+
+/* Glow blob */
+.lp-brand-glow {
+    position: absolute;
+    top: 30%;
+    left: 40%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 300px;
+    background: radial-gradient(ellipse, rgba(15, 108, 189, 0.25) 0%, transparent 70%);
+    filter: blur(60px);
+    pointer-events: none;
+}
+
+.lp-brand-inner {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+}
+
+/* Logo */
+.lp-brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 48px;
+}
+
+.lp-brand-logo-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.lp-brand-logo-text {
+    font-size: 22px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+}
+
+/* Headline */
+.lp-brand-headline {
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    color: #ffffff;
+    margin: 0 0 20px;
+}
+
+.lp-brand-headline-accent {
+    background: linear-gradient(135deg, #60B3F8 0%, #7C3AED 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Tagline */
+.lp-brand-tagline {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.6);
+    margin: 0 0 40px;
+    max-width: 400px;
+}
+
+/* Feature bullets */
+.lp-brand-bullets {
+    list-style: none;
+    margin: 0 0 48px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.lp-brand-bullet {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.lp-bullet-check {
+    width: 16px;
+    height: 16px;
+    color: #34D399;
+    flex-shrink: 0;
+}
+
+/* Compliance badges */
+.lp-brand-compliance {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.lp-compliance-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 4px 10px;
+    border-radius: var(--radiusFull);
+}
+
+/* ============================================================
+   RIGHT — Auth panel
+   ============================================================ */
+.lp-auth {
+    flex: 0 0 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 48px;
+    background: var(--colorNeutralSurface);
+    position: relative;
+}
+
+/* Auth card */
+.lp-auth-card {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* Back button */
+.lp-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--fontFamilyBase);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--colorNeutralForegroundSubtle);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    margin-bottom: 36px;
+    transition: color var(--durationFast);
+}
+
+.lp-back-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.lp-back-btn:hover {
+    color: var(--colorNeutralForeground);
+}
+
+/* Auth card header */
+.lp-auth-header {
+    margin-bottom: 32px;
+}
+
+.lp-auth-icon {
+    width: 52px;
+    height: 52px;
+    background: var(--colorBrandLight);
+    border-radius: var(--radiusM);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.lp-auth-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.lp-auth-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--colorNeutralForeground);
+    margin: 0 0 8px;
+}
+
+.lp-auth-subtitle {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--colorNeutralForegroundSubtle);
+    margin: 0;
+}
+
+/* Error alert */
+.lp-auth-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--colorRiskRedBackground);
+    border: 1px solid rgba(164, 38, 44, 0.2);
+    border-radius: var(--radiusM);
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--colorRiskRed);
+    margin-bottom: 20px;
+}
+
+.lp-auth-error svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Microsoft sign-in button */
+.lp-ms-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 14px 24px;
+    font-family: var(--fontFamilyBase);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--colorNeutralForeground);
+    background: var(--colorNeutralSurface);
+    border: 1.5px solid var(--colorNeutralBorder);
+    border-radius: var(--radiusM);
+    cursor: pointer;
+    transition: all var(--durationFast) var(--easingStandard);
+    box-shadow: var(--shadowS);
+    margin-bottom: 0;
+}
+
+.lp-ms-btn:hover:not(:disabled) {
+    background: var(--colorNeutralSurfaceAlt);
+    border-color: var(--colorNeutralBorderStrong);
+    box-shadow: var(--shadowM);
+    transform: translateY(-1px);
+}
+
+.lp-ms-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: var(--shadowXS);
+}
+
+.lp-ms-btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.lp-ms-btn:focus-visible {
+    outline: 2px solid var(--colorBrandPrimary);
+    outline-offset: 2px;
+}
+
+.lp-ms-logo {
+    width: 21px;
+    height: 21px;
+    flex-shrink: 0;
+}
+
+/* Loading spinner */
+.lp-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--colorNeutralBorder);
+    border-top-color: var(--colorBrandPrimary);
+    border-radius: 50%;
+    animation: lp-spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes lp-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Divider */
+.lp-auth-divider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 24px 0;
+    color: var(--colorNeutralForegroundMuted);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.lp-auth-divider::before,
+.lp-auth-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--colorNeutralBorder);
+}
+
+.lp-auth-divider span {
+    padding: 0 12px;
+}
+
+/* Info box */
+.lp-auth-info {
+    display: flex;
+    gap: 12px;
+    background: var(--colorNeutralSurfaceAlt);
+    border: 1px solid var(--colorNeutralBorder);
+    border-radius: var(--radiusM);
+    padding: 14px 16px;
+    margin-bottom: 24px;
+}
+
+.lp-auth-info-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--colorNeutralForegroundSubtle);
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.lp-auth-info-text {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.55;
+    color: var(--colorNeutralForegroundSubtle);
+    margin: 0;
+}
+
+/* Auth footer links */
+.lp-auth-footer {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--colorNeutralForegroundSubtle);
+    margin-bottom: 0;
+}
+
+.lp-auth-link {
+    color: var(--colorBrandPrimary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--durationFast);
+}
+
+.lp-auth-link:hover {
+    color: var(--colorBrandPrimaryHover);
+    text-decoration: underline;
+}
+
+/* Legal footnote */
+.lp-auth-legal {
+    position: absolute;
+    bottom: 24px;
+    left: 48px;
+    right: 48px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--colorNeutralForegroundMuted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 900px) {
+    .lp-root {
+        flex-direction: column;
+    }
+
+    .lp-brand {
+        flex: none;
+        padding: 40px 32px;
+        min-height: auto;
+    }
+
+    .lp-brand-headline {
+        font-size: 32px;
+    }
+
+    .lp-auth {
+        flex: none;
+        padding: 40px 24px 80px;
+    }
+
+    .lp-auth-legal {
+        left: 24px;
+        right: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .lp-brand {
+        padding: 32px 20px;
+    }
+
+    .lp-auth {
+        padding: 32px 20px 72px;
+    }
+
+    .lp-auth-legal {
+        left: 20px;
+        right: 20px;
+    }
+}

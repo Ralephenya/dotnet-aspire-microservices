@@ -1,0 +1,197 @@
+@* ============================================================
+   LoginPage.razor — Split-panel authentication page
+   Used by: GACS.Web.Admin (Pages/Login.razor at /login)
+
+   Layout:
+     Left panel  — dark branding hero with shield logo, tagline, and feature bullets
+     Right panel — centred auth card with "Sign in with Microsoft" (Entra ID)
+
+   Auth wiring:
+     The OnSignIn callback is invoked when the user clicks the sign-in button.
+     In Login.razor, wire this to the Microsoft.Identity.Web challenge flow.
+     For now it navigates to /dashboard (scaffold placeholder).
+
+   Callbacks:
+     OnSignIn    — called when "Sign in with Microsoft" is clicked
+     OnGoHome    — called when "Back to Home" is clicked
+   ============================================================ *@
+
+<div class="lp-root">
+
+    @* ── LEFT — Branding panel ── *@
+    <div class="lp-brand" aria-hidden="true">
+        <div class="lp-brand-grid-overlay"></div>
+        <div class="lp-brand-glow"></div>
+
+        <div class="lp-brand-inner">
+            @* Logo *@
+            <div class="lp-brand-logo">
+                <svg class="lp-brand-logo-icon" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L3 7V11.5C3 16.5 6.5 21.26 12 23C17.5 21.26 21 16.5 21 11.5V7L12 2Z" fill="#0F6CBD"/>
+                    <path d="M10.5 14.5L16 9L17 10L10.5 16.5L7 13L8 12L10.5 14.5Z" fill="white"/>
+                </svg>
+                <span class="lp-brand-logo-text">GACS</span>
+            </div>
+
+            <h1 class="lp-brand-headline">
+                Gated Access<br />
+                <span class="lp-brand-headline-accent">Compliance Suite</span>
+            </h1>
+            <p class="lp-brand-tagline">
+                POPIA-compliant visitor management for South African gated estates.
+                Secure. Real-time. Fully auditable.
+            </p>
+
+            @* Feature bullets *@
+            <ul class="lp-brand-bullets" role="list">
+                @foreach (var bullet in _bullets)
+                {
+                    <li class="lp-brand-bullet">
+                        <svg class="lp-bullet-check" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                            <path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.75.75 0 011.06-1.06L6 10.94l6.72-6.72a.75.75 0 011.06 0z"/>
+                        </svg>
+                        @bullet
+                    </li>
+                }
+            </ul>
+
+            <div class="lp-brand-compliance">
+                <div class="lp-compliance-badge">POPIA</div>
+                <div class="lp-compliance-badge">SOC 2 Ready</div>
+                <div class="lp-compliance-badge">Entra ID</div>
+            </div>
+        </div>
+    </div>
+
+    @* ── RIGHT — Auth card ── *@
+    <div class="lp-auth">
+        <div class="lp-auth-card">
+
+            @* Back link *@
+            <button class="lp-back-btn" @onclick="OnGoHomeClick" type="button">
+                <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path d="M15 8a.5.5 0 00-.5-.5H2.707l3.147-3.146a.5.5 0 10-.708-.708l-4 4a.5.5 0 000 .708l4 4a.5.5 0 00.708-.708L2.707 8.5H14.5A.5.5 0 0015 8z"/>
+                </svg>
+                Back to Home
+            </button>
+
+            @* Card header *@
+            <div class="lp-auth-header">
+                <div class="lp-auth-icon">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 2L3 7V11.5C3 16.5 6.5 21.26 12 23C17.5 21.26 21 16.5 21 11.5V7L12 2Z" fill="#0F6CBD"/>
+                        <path d="M10.5 14.5L16 9L17 10L10.5 16.5L7 13L8 12L10.5 14.5Z" fill="white"/>
+                    </svg>
+                </div>
+                <h2 class="lp-auth-title">Welcome back</h2>
+                <p class="lp-auth-subtitle">
+                    Sign in with your organisation's Microsoft account to access the GACS Admin Portal.
+                </p>
+            </div>
+
+            @* Error state *@
+            @if (!string.IsNullOrEmpty(_errorMessage))
+            {
+                <div class="lp-auth-error" role="alert">
+                    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    @_errorMessage
+                </div>
+            }
+
+            @* Sign in with Microsoft button *@
+            <button class="lp-ms-btn" @onclick="HandleSignIn" disabled="@_isLoading" type="button"
+                    aria-label="Sign in with Microsoft">
+                @if (_isLoading)
+                {
+                    <div class="lp-spinner" aria-label="Signing in…"></div>
+                    <span>Signing in…</span>
+                }
+                else
+                {
+                    @* Official Microsoft logo SVG *@
+                    <svg class="lp-ms-logo" viewBox="0 0 21 21" fill="none" aria-hidden="true">
+                        <rect x="0"  y="0"  width="10" height="10" fill="#F25022"/>
+                        <rect x="11" y="0"  width="10" height="10" fill="#7FBA00"/>
+                        <rect x="0"  y="11" width="10" height="10" fill="#00A4EF"/>
+                        <rect x="11" y="11" width="10" height="10" fill="#FFB900"/>
+                    </svg>
+                    <span>Sign in with Microsoft</span>
+                }
+            </button>
+
+            <div class="lp-auth-divider" role="separator">
+                <span>or</span>
+            </div>
+
+            @* Info box — what happens on sign-in *@
+            <div class="lp-auth-info">
+                <svg class="lp-auth-info-icon" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                <p class="lp-auth-info-text">
+                    Access is restricted to authorised estate administrators. If your organisation hasn't been provisioned,
+                    contact your GACS system administrator.
+                </p>
+            </div>
+
+            @* Request access link *@
+            <div class="lp-auth-footer">
+                <p>
+                    New estate?
+                    <a href="mailto:admin@gacs.co.za?subject=GACS%20Access%20Request" class="lp-auth-link">
+                        Request access →
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        @* Legal / compliance footnote *@
+        <p class="lp-auth-legal">
+            By signing in you agree to GACS data processing terms and your organisation's
+            POPIA information officer policies.
+        </p>
+    </div>
+</div>
+
+@code {
+    // ── Callbacks — wire in Login.razor ──
+    [Parameter] public EventCallback OnSignIn { get; set; }
+    [Parameter] public EventCallback OnGoHome { get; set; }
+
+    private bool _isLoading;
+    private string? _errorMessage;
+
+    private async Task HandleSignIn()
+    {
+        _isLoading = true;
+        _errorMessage = null;
+
+        try
+        {
+            await OnSignIn.InvokeAsync();
+        }
+        catch (Exception)
+        {
+            // TODO: Log with ILogger. In production, Microsoft.Identity.Web
+            // throws MsalException / AuthenticationFailedException.
+            _errorMessage = "Sign-in failed. Please try again or contact your administrator.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private async Task OnGoHomeClick() => await OnGoHome.InvokeAsync();
+
+    private static readonly string[] _bullets =
+    [
+        "AI-powered visitor risk scoring",
+        "Full POPIA audit trail & consent engine",
+        "QR pre-registration for faster gate entry",
+        "Multi-tenant — each estate fully isolated",
+        "Real-time gate control from any device",
+    ];
+}

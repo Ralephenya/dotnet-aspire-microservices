@@ -1,15 +1,15 @@
+@* ============================================================
+   Home.razor — Public landing page at /
+   Uses the LandingPage component from GACS.Components.
+   ============================================================ *@
+
 @page "/"
 @inject NavigationManager Navigation
 
 <PageTitle>GACS — Gated Access Compliance Suite</PageTitle>
 
-<LandingPage OnLogin="HandleLogin" />
+<LandingPage OnLogin="GoToLogin" OnRequestDemo="GoToLogin" />
 
 @code {
-    private void HandleLogin()
-    {
-        // TODO: Wire up Microsoft Identity Web authentication flow.
-        // When login is implemented, redirect to the admin dashboard.
-        Navigation.NavigateTo("/dashboard");
-    }
+    private void GoToLogin()       => Navigation.NavigateTo("/login");
 }

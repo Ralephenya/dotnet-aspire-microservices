@@ -1,32 +1,94 @@
-@* Admin Shell — used by: Admin portal, IO portal, Compliance dashboard, Resident portal
-   Structure: Top nav bar | Sidebar nav (fixed, collapsible) | Scrollable content area
-   Reference: FRONTEND-ARCHITECTURE.md Section 6 Shell 1 *@
+@* ============================================================
+   AdminShell.razor — Master layout for all authenticated admin pages
+   Used by: Dashboard, Sites, Visitors, Users, Compliance, Audit Log, Settings
 
-<div class="gacs-admin-shell">
-    <header class="gacs-admin-topbar">
-        <div class="gacs-logo">GACS</div>
-        <div class="gacs-topbar-actions">
+   Slots:
+     ChildContent    — the page body (scrollable main area)
+     SidebarContent  — navigation links (use FluentNavMenu or plain <a> tags)
+     TopBarContent   — right side of the top bar (page title, user menu, etc.)
+
+   Usage example:
+     <AdminShell>
+         <TopBarContent>Dashboard</TopBarContent>
+         <SidebarContent>
+             <a class="gacs-nav-item" href="/dashboard">Dashboard</a>
+             <a class="gacs-nav-item" href="/visitors">Visitors</a>
+         </SidebarContent>
+         <ChildContent>
+             <!-- your page widgets go here -->
+         </ChildContent>
+     </AdminShell>
+
+   Reference: FRONTEND-ARCHITECTURE.md Section 6 — Shell 1
+   ============================================================ *@
+
+<div class="gacs-shell @(_sidebarCollapsed ? "gacs-shell--collapsed" : "")">
+
+    @* ── Top navigation bar ── *@
+    <header class="gacs-topbar" role="banner">
+
+        @* Left: sidebar toggle + logo *@
+        <div class="gacs-topbar-left">
+            <button class="gacs-sidebar-toggle"
+                    @onclick="ToggleSidebar"
+                    type="button"
+                    aria-label="@(_sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar")"
+                    aria-expanded="@(!_sidebarCollapsed)">
+                @* Hamburger / close icon *@
+                <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    @if (_sidebarCollapsed)
+                    {
+                        <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                    }
+                    else
+                    {
+                        <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                    }
+                </svg>
+            </button>
+
+            <a class="gacs-topbar-logo" href="/" aria-label="GACS Home">
+                <svg class="gacs-topbar-logo-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 2L3 7V11.5C3 16.5 6.5 21.26 12 23C17.5 21.26 21 16.5 21 11.5V7L12 2Z" fill="#0F6CBD"/>
+                    <path d="M10.5 14.5L16 9L17 10L10.5 16.5L7 13L8 12L10.5 14.5Z" fill="white"/>
+                </svg>
+                <span class="gacs-topbar-logo-text">GACS</span>
+                <span class="gacs-topbar-logo-badge">Admin</span>
+            </a>
+        </div>
+
+        @* Right: page title / actions (passed in by each page) *@
+        <div class="gacs-topbar-right">
             @TopBarContent
         </div>
     </header>
 
-    <div class="gacs-admin-body">
-        <nav class="gacs-admin-sidebar @(_sidebarCollapsed ? "collapsed" : "")">
+    @* ── Sidebar navigation ── *@
+    <aside class="gacs-sidebar" role="navigation" aria-label="Admin navigation">
+        <div class="gacs-sidebar-inner">
             @SidebarContent
-        </nav>
+        </div>
+    </aside>
 
-        <main class="gacs-admin-main">
-            @ChildContent
-        </main>
-    </div>
+    @* ── Main content area ── *@
+    <main class="gacs-main" role="main" id="main-content" tabindex="-1">
+        @ChildContent
+    </main>
+
 </div>
 
 @code {
-    [Parameter] public RenderFragment? ChildContent { get; set; }
-    [Parameter] public RenderFragment? SidebarContent { get; set; }
-    [Parameter] public RenderFragment? TopBarContent { get; set; }
+    // ── Slots ──
+    [Parameter] public RenderFragment? ChildContent    { get; set; }
+    [Parameter] public RenderFragment? SidebarContent  { get; set; }
+    [Parameter] public RenderFragment? TopBarContent   { get; set; }
 
+    // ── State ──
     private bool _sidebarCollapsed;
 
+    /// <summary>
+    /// Toggle the sidebar. Can be called from a child component if needed.
+    /// Tip: inject a reference with @ref and call shell.ToggleSidebar().
+    /// </summary>
     public void ToggleSidebar() => _sidebarCollapsed = !_sidebarCollapsed;
 }

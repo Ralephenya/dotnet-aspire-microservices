@@ -1,0 +1,333 @@
+/* ============================================================
+   AdminShell.razor.css — Layout for every authenticated admin page
+   Scoped by Blazor CSS isolation — no naming conflicts.
+
+   Grid layout (desktop):
+     [topbar    — 64px, spans full width    ]
+     [sidebar   ] [main content area        ]
+     [240px     ] [flex: 1, scrollable      ]
+
+   Collapsed sidebar: 60px wide (icons only).
+   All transitions are 250ms ease for smooth collapse animation.
+   ============================================================ */
+
+/* ── ROOT SHELL GRID ── */
+.gacs-shell {
+    display: grid;
+    grid-template-areas:
+        "topbar  topbar"
+        "sidebar main";
+    grid-template-rows: 64px 1fr;
+    grid-template-columns: 240px 1fr;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--colorNeutralBackground, #F8FAFC);
+    font-family: var(--fontFamilyBase, 'Inter', system-ui, sans-serif);
+    transition: grid-template-columns var(--durationNormal, 250ms) var(--easingStandard, cubic-bezier(0.4,0,0.2,1));
+}
+
+/* Collapsed: sidebar shrinks to 60px (icon rail) */
+.gacs-shell--collapsed {
+    grid-template-columns: 60px 1fr;
+}
+
+/* ============================================================
+   TOP BAR
+   ============================================================ */
+.gacs-topbar {
+    grid-area: topbar;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    height: 64px;
+    background: var(--colorNeutralSurface, #fff);
+    border-bottom: 1px solid var(--colorNeutralBorder, #E2E8F0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    gap: 16px;
+}
+
+/* Left side: toggle button + logo */
+.gacs-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* Sidebar toggle button */
+.gacs-sidebar-toggle {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: var(--radiusS, 6px);
+    color: var(--colorNeutralForegroundSubtle, #64748B);
+    cursor: pointer;
+    transition: background var(--durationFast, 150ms), color var(--durationFast, 150ms);
+    flex-shrink: 0;
+}
+
+.gacs-sidebar-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+.gacs-sidebar-toggle:hover {
+    background: var(--colorNeutralSurfaceAlt, #F1F5F9);
+    color: var(--colorNeutralForeground, #0F172A);
+}
+
+.gacs-sidebar-toggle:focus-visible {
+    outline: 2px solid var(--colorBrandPrimary, #0F6CBD);
+    outline-offset: 2px;
+}
+
+/* Logo in topbar */
+.gacs-topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.gacs-topbar-logo-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.gacs-topbar-logo-text {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--colorNeutralForeground, #0F172A);
+    letter-spacing: -0.4px;
+    white-space: nowrap;
+}
+
+.gacs-topbar-logo-badge {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--colorBrandPrimary, #0F6CBD);
+    background: var(--colorBrandLight, #EBF4FC);
+    padding: 2px 6px;
+    border-radius: var(--radiusFull, 9999px);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* Hide logo text + badge when sidebar is collapsed (topbar shrinks) */
+.gacs-shell--collapsed .gacs-topbar-logo-text,
+.gacs-shell--collapsed .gacs-topbar-logo-badge {
+    display: none;
+}
+
+/* Right side: page title / user actions */
+.gacs-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+.gacs-sidebar {
+    grid-area: sidebar;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    background: var(--colorBrandDark, #040F1E);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: width var(--durationNormal, 250ms) var(--easingStandard, cubic-bezier(0.4,0,0.2,1));
+}
+
+.gacs-sidebar-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 8px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    /* Hide scrollbar but keep functionality */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+.gacs-sidebar-inner::-webkit-scrollbar { width: 4px; }
+.gacs-sidebar-inner::-webkit-scrollbar-track { background: transparent; }
+.gacs-sidebar-inner::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+/* ── Nav item — used inside SidebarContent slot ──
+   Apply class="gacs-nav-item" to any <a> or <button> in the sidebar.
+   Active state: add class="gacs-nav-item--active"
+*/
+::deep .gacs-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: var(--radiusS, 6px);
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    font-family: var(--fontFamilyBase, 'Inter', system-ui, sans-serif);
+    transition: color var(--durationFast, 150ms), background var(--durationFast, 150ms);
+}
+
+::deep .gacs-nav-item:hover {
+    color: rgba(255, 255, 255, 0.92);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+::deep .gacs-nav-item--active,
+::deep .gacs-nav-item[aria-current="page"] {
+    color: #ffffff;
+    background: rgba(15, 108, 189, 0.35);
+}
+
+::deep .gacs-nav-item--active::before,
+::deep .gacs-nav-item[aria-current="page"]::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: var(--colorBrandPrimary, #0F6CBD);
+    border-radius: 0 3px 3px 0;
+}
+
+::deep .gacs-nav-item {
+    position: relative; /* needed for the active bar */
+}
+
+/* Nav item icon */
+::deep .gacs-nav-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    color: inherit;
+}
+
+/* Nav item label — hidden when collapsed */
+::deep .gacs-nav-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity var(--durationFast, 150ms), width var(--durationFast, 150ms);
+}
+
+.gacs-shell--collapsed ::deep .gacs-nav-label {
+    opacity: 0;
+    width: 0;
+}
+
+/* Section header in sidebar */
+::deep .gacs-nav-section {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.25);
+    padding: 16px 10px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity var(--durationFast, 150ms);
+}
+
+.gacs-shell--collapsed ::deep .gacs-nav-section {
+    opacity: 0;
+}
+
+/* Divider */
+::deep .gacs-nav-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    margin: 8px 0;
+}
+
+/* ============================================================
+   MAIN CONTENT AREA
+   ============================================================ */
+.gacs-main {
+    grid-area: main;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 0; /* important: allows grid item to shrink below content height */
+    background: var(--colorNeutralBackground, #F8FAFC);
+    /* Padding inside main — override per page if needed */
+    padding: 32px;
+}
+
+/* ── Skip link for keyboard accessibility ── */
+.gacs-main:focus {
+    outline: none;
+}
+
+/* ============================================================
+   RESPONSIVE — tablets and below
+   ============================================================ */
+@media (max-width: 768px) {
+    .gacs-shell {
+        grid-template-areas:
+            "topbar"
+            "main";
+        grid-template-columns: 1fr;
+        grid-template-rows: 64px 1fr;
+    }
+
+    /* Sidebar becomes an overlay on mobile */
+    .gacs-sidebar {
+        position: fixed;
+        top: 64px;
+        left: 0;
+        bottom: 0;
+        width: 240px;
+        z-index: 150;
+        transform: translateX(-100%);
+        transition: transform var(--durationNormal, 250ms) var(--easingStandard);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Show sidebar on mobile when NOT collapsed (collapsed = hidden on mobile) */
+    .gacs-shell:not(.gacs-shell--collapsed) .gacs-sidebar {
+        transform: translateX(0);
+    }
+
+    .gacs-main {
+        padding: 20px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .gacs-topbar {
+        padding: 0 12px;
+    }
+
+    .gacs-main {
+        padding: 16px 12px;
+    }
+}

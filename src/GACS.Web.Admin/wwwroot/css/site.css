@@ -1,68 +1,150 @@
-@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+/* ============================================================
+   site.css — Global baseline styles for GACS.Web.Admin
+   Design tokens are defined in:
+     _content/GACS.Components/gacs-tokens.css  (loaded in _Host.cshtml)
+
+   Do NOT put component-specific styles here.
+   Use .razor.css scoped files for component styles.
+   ============================================================ */
+
+/* ── Reset & baseline ── */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: var(--fontFamilyBase, 'Inter', 'Segoe UI Variable', system-ui, sans-serif);
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--colorNeutralForeground, #0F172A);
+    background: var(--colorNeutralBackground, #F8FAFC);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-h1:focus {
-    outline: none;
+/* ── Typography ── */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
-a, .btn-link {
-    color: #0071c1;
+p { margin-top: 0; }
+
+a {
+    color: var(--colorBrandPrimary, #0F6CBD);
+    text-decoration: none;
+    transition: color 150ms ease;
 }
 
-.btn-primary {
-    color: #fff;
-    background-color: #1b6ec2;
-    border-color: #1861ac;
+a:hover {
+    color: var(--colorBrandPrimaryHover, #0E5BA8);
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+/* ── Focus visible ring — accessibility ── */
+:focus-visible {
+    outline: 2px solid var(--colorBrandPrimary, #0F6CBD);
+    outline-offset: 2px;
+    border-radius: 3px;
 }
 
-.content {
-    padding-top: 1.1rem;
+/* ── Scrollbar — minimal, matches design ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: var(--colorNeutralBorder, #E2E8F0);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--colorNeutralBorderStrong, #CBD5E1);
 }
 
+/* ── Blazor error UI ── */
+#blazor-error-ui {
+    background: var(--colorRiskRedBackground, #FDE7E9);
+    border-top: 1px solid var(--colorRiskRed, #A4262C);
+    color: var(--colorRiskRed, #A4262C);
+    bottom: 0;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+    display: none;
+    font-family: var(--fontFamilyBase);
+    font-size: 14px;
+    font-weight: 500;
+    left: 0;
+    padding: 12px 24px;
+    position: fixed;
+    width: 100%;
+    z-index: 9999;
+    align-items: center;
+    gap: 12px;
+}
+
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    opacity: 0.6;
+    transition: opacity 150ms;
+}
+
+#blazor-error-ui .dismiss:hover { opacity: 1; }
+
+/* ── Blazor error boundary ── */
+.blazor-error-boundary {
+    padding: 16px 20px 16px 56px;
+    color: white;
+    background:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' fill='%23FFE500' viewBox='0 0 24 24'><path d='M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z'/></svg>")
+        no-repeat 16px center / 24px,
+        #A4262C;
+    border-radius: var(--radiusM, 10px);
+    font-size: 14px;
+}
+
+.blazor-error-boundary::after {
+    content: "An unhandled error has occurred.";
+}
+
+/* ── Utility: visually hidden (accessibility) ── */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ── Utility: form validation colours ── */
 .valid.modified:not([type=checkbox]) {
-    outline: 1px solid #26b050;
+    outline: 2px solid var(--colorCompliant, #107C10);
+    outline-offset: 1px;
 }
 
 .invalid {
-    outline: 1px solid red;
+    outline: 2px solid var(--colorNonCompliant, #A4262C);
+    outline-offset: 1px;
 }
 
 .validation-message {
-    color: red;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--colorNonCompliant, #A4262C);
+    margin-top: 4px;
 }
-
-#blazor-error-ui {
-    background: lightyellow;
-    bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
-    display: none;
-    left: 0;
-    padding: 0.6rem 1.25rem 0.7rem 1.25rem;
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-}
-
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
-
-.blazor-error-boundary {
-    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTYiIGhlaWdodD0iNDkiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIG92ZXJmbG93PSJoaWRkZW4iPjxkZWZzPjxjbGlwUGF0aCBpZD0iY2xpcDAiPjxyZWN0IHg9IjIzNSIgeT0iNTEiIHdpZHRoPSI1NiIgaGVpZ2h0PSI0OSIvPjwvY2xpcFBhdGg+PC9kZWZzPjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMCkiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMzUgLTUxKSI+PHBhdGggZD0iTTI2My41MDYgNTFDMjY0LjcxNyA1MSAyNjUuODEzIDUxLjQ4MzcgMjY2LjYwNiA1Mi4yNjU4TDI2Ny4wNTIgNTIuNzk4NyAyNjcuNTM5IDUzLjYyODMgMjkwLjE4NSA5Mi4xODMxIDI5MC41NDUgOTIuNzk1IDI5MC42NTYgOTIuOTk2QzI5MC44NzcgOTMuNTEzIDI5MSA5NC4wODE1IDI5MSA5NC42NzgyIDI5MSA5Ny4wNjUxIDI4OS4wMzggOTkgMjg2LjYxNyA5OUwyNDAuMzgzIDk5QzIzNy45NjMgOTkgMjM2IDk3LjA2NTEgMjM2IDk0LjY3ODIgMjM2IDk0LjM3OTkgMjM2LjAzMSA5NC4wODg2IDIzNi4wODkgOTMuODA3MkwyMzYuMzM4IDkzLjAxNjIgMjM2Ljg1OCA5Mi4xMzE0IDI1OS40NzMgNTMuNjI5NCAyNTkuOTYxIDUyLjc5ODUgMjYwLjQwNyA1Mi4yNjU4QzI2MS4yIDUxLjQ4MzcgMjYyLjI5NiA1MSAyNjMuNTA2IDUxWk0yNjMuNTg2IDY2LjAxODNDMjYwLjczNyA2Ni4wMTgzIDI1OS4zMTMgNjcuMTI0NSAyNTkuMzEzIDY5LjMzNyAyNTkuMzEzIDY5LjYxMDIgMjU5LjMzMiA2OS44NjA4IDI1OS4zNzEgNzAuMDg4N0wyNjEuNzk1IDg0LjAxNjEgMjY1LjM4IDg0LjAxNjEgMjY3LjgyMSA2OS43NDc1QzI2Ny44NiA2OS43MzA5IDI2Ny44NzkgNjkuNTg3NyAyNjcuODc5IDY5LjMxNzkgMjY3Ljg3OSA2Ny4xMTgyIDI2Ni40NDggNjYuMDE4MyAyNjMuNTg2IDY2LjAxODNaTTI2My41NzYgODYuMDU0N0MyNjEuMDQ5IDg2LjA1NDcgMjU5Ljc4NiA4Ny4zMDA1IDI1OS43ODYgODkuNzkyMSAyNTkuNzg2IDkyLjI4MzcgMjYxLjA0OSA5My41Mjk1IDI2My41NzYgOTMuNTI5NSAyNjYuMTE2IDkzLjUyOTUgMjY3LjM4NyA5Mi4yODM3IDI2Ny4zODcgODkuNzkyMSAyNjcuMzg3IDg3LjMwMDUgMjY2LjExNiA4Ni4wNTQ3IDI2My41NzYgODYuMDU0N1oiIGZpbGw9IiNGRkU1MDAiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=) no-repeat 1rem/1.8rem, #b32121;
-    padding: 1rem 1rem 1rem 3.7rem;
-    color: white;
-}
-
-    .blazor-error-boundary::after {
-        content: "An error has occurred."
-    }

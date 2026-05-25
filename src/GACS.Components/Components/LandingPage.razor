@@ -1,219 +1,390 @@
-@* GACS Landing Page — Production-ready welcome surface for all GACS frontend projects.
-   Used by: GACS.Web.Admin (Home), GACS.Web.Visitor, GACS.Web.Resident, GACS.Mobile.Guard
+@* ============================================================
+   LandingPage.razor — Premium GACS public landing surface
+   Used by: GACS.Web.Admin (Home.razor)
    Reference: FRONTEND-ARCHITECTURE.md Section 6
-   Design: Full-width hero | Feature surface cards | Architecture guide | Footer
-   Icons: Inline SVGs used here. Replace with FluentIcon once Microsoft.FluentUI.AspNetCore.Components.Icons
-          strongly-typed classes (Icons.Filled.Size48.Shield etc.) are confirmed working in the solution.
-*@
 
-<div class="gacs-landing">
+   Layout:
+     1. Fixed navigation bar   — logo, nav links, Sign In + Request Demo
+     2. Hero section           — dark gradient, headline, CTAs, trust badges
+     3. Stats bar              — 4 key numbers
+     4. Features section       — 6-item grid
+     5. Surfaces section       — 4 front-end portals
+     6. Architecture docs      — links to the 4 architecture .md files
+     7. Footer                 — links, copyright
 
-    @* ─── HERO SECTION ─── *@
-    <section class="gacs-landing-hero">
-        <div class="gacs-landing-hero-content">
-            <svg class="gacs-landing-hero-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L3 7V11.5C3 16.5 6.5 21.26 12 23C17.5 21.26 21 16.5 21 11.5V7L12 2ZM12 20.5C7.5 19 5 15 5 11.5V8.3L12 4.3L19 8.3V11.5C19 15 16.5 19 12 20.5ZM10.5 14.5L16 9L17 10L10.5 16.5L7 13L8 12L10.5 14.5Z" fill="currentColor" />
-            </svg>
-            <h1 class="gacs-landing-hero-title">Gated Access Compliance Suite</h1>
-            <p class="gacs-landing-hero-subtitle">
-                Secure visitor management, real-time risk scoring, and POPIA-compliant
-                access control for gated residential communities and commercial estates.
-            </p>
-            <div class="gacs-landing-hero-actions">
-                <FluentButton Appearance="Appearance.Accent" OnClick="OnLoginClick" Class="gacs-landing-btn-primary">
+   Callbacks (wire in Home.razor):
+     OnLogin       — called by every "Sign In" button
+     OnRequestDemo — called by "Request Demo" button in nav/hero
+   ============================================================ *@
+
+<div class="gl-root">
+
+    @* ── 1. NAVIGATION ── *@
+    <nav class="gl-nav" role="navigation" aria-label="Main navigation">
+        <div class="gl-nav-inner">
+
+            @* Logo *@
+            <a class="gl-nav-logo" href="/" aria-label="GACS home">
+                <svg class="gl-nav-logo-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 2L3 7V11.5C3 16.5 6.5 21.26 12 23C17.5 21.26 21 16.5 21 11.5V7L12 2Z"
+                          fill="#0F6CBD" />
+                    <path d="M10.5 14.5L16 9L17 10L10.5 16.5L7 13L8 12L10.5 14.5Z"
+                          fill="white" />
+                </svg>
+                <span class="gl-nav-logo-text">GACS</span>
+                <span class="gl-nav-logo-badge">Admin</span>
+            </a>
+
+            @* Desktop links *@
+            <ul class="gl-nav-links" role="list">
+                <li><a class="gl-nav-link" href="#features">Features</a></li>
+                <li><a class="gl-nav-link" href="#surfaces">Portals</a></li>
+                <li><a class="gl-nav-link" href="#architecture">Architecture</a></li>
+            </ul>
+
+            @* CTA buttons *@
+            <div class="gl-nav-actions">
+                <button class="gl-btn gl-btn-ghost" @onclick="OnLoginClick" type="button">
                     Sign In
-                </FluentButton>
-                <FluentButton Appearance="Appearance.Outline" OnClick="ScrollToArchitecture" Class="gacs-landing-btn-secondary">
-                    Developer Guide
-                </FluentButton>
+                </button>
+                <button class="gl-btn gl-btn-primary" @onclick="OnRequestDemoClick" type="button">
+                    Request Demo
+                </button>
+            </div>
+
+            @* Mobile hamburger *@
+            <button class="gl-nav-hamburger" @onclick="ToggleMenu" type="button"
+                    aria-label="Toggle menu" aria-expanded="@_menuOpen">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+
+        @* Mobile menu *@
+        @if (_menuOpen)
+        {
+            <div class="gl-nav-mobile-menu" role="menu">
+                <a class="gl-nav-mobile-link" href="#features"   @onclick="() => _menuOpen = false">Features</a>
+                <a class="gl-nav-mobile-link" href="#surfaces"   @onclick="() => _menuOpen = false">Portals</a>
+                <a class="gl-nav-mobile-link" href="#architecture" @onclick="() => _menuOpen = false">Architecture</a>
+                <div class="gl-nav-mobile-actions">
+                    <button class="gl-btn gl-btn-ghost gl-btn-full" @onclick="OnLoginClick" type="button">Sign In</button>
+                    <button class="gl-btn gl-btn-primary gl-btn-full" @onclick="OnRequestDemoClick" type="button">Request Demo</button>
+                </div>
+            </div>
+        }
+    </nav>
+
+    @* ── 2. HERO ── *@
+    <section class="gl-hero" aria-label="Introduction">
+        <div class="gl-hero-grid-overlay" aria-hidden="true"></div>
+        <div class="gl-hero-glow" aria-hidden="true"></div>
+
+        <div class="gl-hero-inner">
+
+            @* Trust pill *@
+            <div class="gl-hero-pill" role="note">
+                <span class="gl-hero-pill-dot" aria-hidden="true"></span>
+                POPIA Compliant &nbsp;·&nbsp; Entra ID &nbsp;·&nbsp; .NET 10 &nbsp;·&nbsp; Aspire
+            </div>
+
+            <h1 class="gl-hero-title">
+                Secure.<br />
+                Compliant.<br />
+                <span class="gl-hero-title-accent">Gated Access.</span>
+            </h1>
+
+            <p class="gl-hero-subtitle">
+                Real-time visitor management, AI-powered risk scoring, and full POPIA audit compliance —
+                purpose-built for gated residential communities and commercial estates across South Africa.
+            </p>
+
+            <div class="gl-hero-actions">
+                <button class="gl-btn gl-btn-white gl-btn-lg" @onclick="OnLoginClick" type="button">
+                    Sign In to Admin Portal
+                    <svg class="gl-btn-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                        <path d="M3 8a.5.5 0 01.5-.5h7.293L8.146 4.854a.5.5 0 11.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 11-.708-.708L10.793 8.5H3.5A.5.5 0 013 8z"/>
+                    </svg>
+                </button>
+                <a class="gl-btn gl-btn-outline-white gl-btn-lg" href="#features">
+                    Explore Features
+                </a>
+            </div>
+
+            @* Trust logos *@
+            <div class="gl-hero-trust" role="list" aria-label="Technology partners">
+                @foreach (var logo in _trustLogos)
+                {
+                    <div class="gl-trust-item" role="listitem">
+                        <span class="gl-trust-dot" aria-hidden="true"></span>
+                        <span>@logo</span>
+                    </div>
+                }
             </div>
         </div>
     </section>
 
-    @* ─── SURFACE CARDS SECTION ─── *@
-    <section class="gacs-landing-surfaces">
-        <h2 class="gacs-landing-section-title">Four Frontend Surfaces</h2>
-        <p class="gacs-landing-section-subtitle">
-            Each surface is built on the Microsoft stack using C# and Blazor — one language, every context.
-        </p>
-        <div class="gacs-landing-surface-grid">
-            @foreach (var surface in _surfaces)
-            {
-                <FluentCard Class="gacs-landing-surface-card">
-                    <div class="gacs-landing-surface-card-header">
-                        <div class="gacs-landing-surface-icon-wrapper">
-                            @((MarkupString)surface.IconSvg)
+    @* ── 3. STATS BAR ── *@
+    <section class="gl-stats" aria-label="Key metrics">
+        <div class="gl-container">
+            <div class="gl-stats-grid" role="list">
+                @foreach (var stat in _stats)
+                {
+                    <div class="gl-stat" role="listitem">
+                        <span class="gl-stat-number">@stat.Value</span>
+                        <span class="gl-stat-label">@stat.Label</span>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+    @* ── 4. FEATURES ── *@
+    <section class="gl-features" id="features" aria-labelledby="features-heading">
+        <div class="gl-container">
+            <div class="gl-section-header">
+                <p class="gl-section-eyebrow">Why GACS</p>
+                <h2 class="gl-section-title" id="features-heading">
+                    Built for compliance.<br />Designed for speed.
+                </h2>
+                <p class="gl-section-subtitle">
+                    Every feature exists to solve a real problem at South African gated estates —
+                    from POPIA obligations to sub-2-second gate entry.
+                </p>
+            </div>
+            <div class="gl-features-grid" role="list">
+                @foreach (var feature in _features)
+                {
+                    <article class="gl-feature-card" role="listitem">
+                        <div class="gl-feature-icon-wrap" aria-hidden="true">
+                            @((MarkupString)feature.IconSvg)
                         </div>
-                        <h3 class="gacs-landing-surface-title">@surface.Title</h3>
-                    </div>
-                    <p class="gacs-landing-surface-desc">@surface.Description</p>
-                    <div class="gacs-landing-surface-meta">
-                        <FluentBadge Appearance="Appearance.Accent" Class="gacs-landing-surface-badge">@surface.Tech</FluentBadge>
-                        <span class="gacs-landing-surface-audience">@surface.Audience</span>
-                    </div>
-                </FluentCard>
-            }
-        </div>
-    </section>
-
-    @* ─── ARCHITECTURE GUIDE SECTION ─── *@
-    <section class="gacs-landing-architecture" id="architecture">
-        <h2 class="gacs-landing-section-title">Architecture Quick Reference</h2>
-        <p class="gacs-landing-section-subtitle">
-            Junior developers — start here before writing your first screen.
-        </p>
-        <div class="gacs-landing-architecture-grid">
-            <FluentCard Class="gacs-landing-arch-card">
-                <div class="gacs-landing-arch-card-header">
-                    <div class="gacs-landing-arch-icon-wrapper">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 2C4.9 2 4 2.9 4 4V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V8L14 2H6ZM13 3.5L18.5 9H13V3.5ZM7 13H17V15H7V13ZM7 17H14V19H7V17Z" fill="currentColor" />
-                        </svg>
-                    </div>
-                    <h3 class="gacs-landing-arch-title">Frontend Architecture</h3>
-                </div>
-                <p class="gacs-landing-arch-desc">
-                    Design tokens, typography scale, spacing grid, iconography rules, and accessibility baseline (WCAG 2.1 AA).
-                </p>
-                <FluentAnchor Href="docs/FRONTEND-ARCHITECTURE.md" Appearance="Appearance.Hypertext">
-                    Read FRONTEND-ARCHITECTURE.md &rarr;
-                </FluentAnchor>
-            </FluentCard>
-            <FluentCard Class="gacs-landing-arch-card">
-                <div class="gacs-landing-arch-card-header">
-                    <div class="gacs-landing-arch-icon-wrapper">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M4 4H20V6H4V4ZM4 10H14V12H4V10ZM4 16H20V18H4V16Z" fill="currentColor" />
-                        </svg>
-                    </div>
-                    <h3 class="gacs-landing-arch-title">Backend Architecture</h3>
-                </div>
-                <p class="gacs-landing-arch-desc">
-                    API gateway, microservices, data layer, AI pipeline, and event-driven integrations.
-                </p>
-                <FluentAnchor Href="docs/BACKEND-ARCHITECTURE.md" Appearance="Appearance.Hypertext">
-                    Read BACKEND-ARCHITECTURE.md &rarr;
-                </FluentAnchor>
-            </FluentCard>
-            <FluentCard Class="gacs-landing-arch-card">
-                <div class="gacs-landing-arch-card-header">
-                    <div class="gacs-landing-arch-icon-wrapper">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20ZM12 6C9.79 6 8 7.79 8 10H10C10 8.9 10.9 8 12 8C13.1 8 14 8.9 14 10C14 12 11 12.5 11 15.5H13C13 13.5 16 13 16 10C16 7.79 14.21 6 12 6ZM11 17H13V19H11V17Z" fill="currentColor" />
-                        </svg>
-                    </div>
-                    <h3 class="gacs-landing-arch-title">Data Architecture</h3>
-                </div>
-                <p class="gacs-landing-arch-desc">
-                    Entity relationships, retention policies, POPIA compliance mappings, and sync behaviour.
-                </p>
-                <FluentAnchor Href="docs/DATA-ARCHITECTURE.md" Appearance="Appearance.Hypertext">
-                    Read DATA-ARCHITECTURE.md &rarr;
-                </FluentAnchor>
-            </FluentCard>
-            <FluentCard Class="gacs-landing-arch-card">
-                <div class="gacs-landing-arch-card-header">
-                    <div class="gacs-landing-arch-icon-wrapper">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20.5 3L21.5 4L13.5 12L9.5 8L3.5 14L2 12.5L9.5 5L13.5 9L19 3.5L17.5 2L20.5 3ZM12.5 14V22H11.5V14H12.5ZM17.5 14V20H16.5V14H17.5ZM7.5 14V18H6.5V14H7.5Z" fill="currentColor" />
-                        </svg>
-                    </div>
-                    <h3 class="gacs-landing-arch-title">Master Architecture</h3>
-                </div>
-                <p class="gacs-landing-arch-desc">
-                    High-level system overview, technology choices, deployment topology, and security model.
-                </p>
-                <FluentAnchor Href="docs/MASTER-ARCHITECTURE.md" Appearance="Appearance.Hypertext">
-                    Read MASTER-ARCHITECTURE.md &rarr;
-                </FluentAnchor>
-            </FluentCard>
-        </div>
-    </section>
-
-    @* ─── COMPONENT SHOWCASE SECTION ─── *@
-    <section class="gacs-landing-components">
-        <h2 class="gacs-landing-section-title">Shared Component Library</h2>
-        <p class="gacs-landing-section-subtitle">
-            Custom GACS components live in <code>GACS.Components</code> and are reused across every surface.
-        </p>
-        <div class="gacs-landing-component-list">
-            <div class="gacs-landing-component-item">
-                <RiskBadge RiskScore="15" />
-                <span class="gacs-landing-component-label">RiskBadge — displays AI-generated visitor risk level</span>
-            </div>
-            <div class="gacs-landing-component-item">
-                <RetentionCountdown RetentionStartDate="DateTime.UtcNow.AddDays(-18)" RetentionExpiresAt="DateTime.UtcNow.AddDays(12)" />
-                <span class="gacs-landing-component-label">RetentionCountdown — days until auto-deletion</span>
+                        <h3 class="gl-feature-title">@feature.Title</h3>
+                        <p class="gl-feature-desc">@feature.Description</p>
+                    </article>
+                }
             </div>
         </div>
     </section>
 
-    @* ─── FOOTER ─── *@
-    <footer class="gacs-landing-footer">
-        <p>
-            &copy; @DateTime.Now.Year GACS — Gated Access Compliance Suite.
-            Built on .NET 10, Blazor, and Microsoft Fluent UI.
-        </p>
+    @* ── 5. SURFACES / PORTALS ── *@
+    <section class="gl-surfaces" id="surfaces" aria-labelledby="surfaces-heading">
+        <div class="gl-container">
+            <div class="gl-section-header">
+                <p class="gl-section-eyebrow">Four Portals</p>
+                <h2 class="gl-section-title" id="surfaces-heading">
+                    One codebase.<br />Every context.
+                </h2>
+                <p class="gl-section-subtitle">
+                    All portals share the <code>GACS.Components</code> library and
+                    are written in C# — no JavaScript framework switching.
+                </p>
+            </div>
+            <div class="gl-surfaces-grid" role="list">
+                @foreach (var surface in _surfaces)
+                {
+                    <article class="gl-surface-card" role="listitem">
+                        <div class="gl-surface-card-top">
+                            <div class="gl-surface-icon-wrap @surface.IconColor" aria-hidden="true">
+                                @((MarkupString)surface.IconSvg)
+                            </div>
+                            <div class="gl-surface-badge">@surface.Tech</div>
+                        </div>
+                        <h3 class="gl-surface-title">@surface.Title</h3>
+                        <p class="gl-surface-desc">@surface.Description</p>
+                        <div class="gl-surface-footer">
+                            <span class="gl-surface-audience-label">Audience</span>
+                            <span class="gl-surface-audience">@surface.Audience</span>
+                        </div>
+                    </article>
+                }
+            </div>
+        </div>
+    </section>
+
+    @* ── 6. ARCHITECTURE DOCS ── *@
+    <section class="gl-arch" id="architecture" aria-labelledby="arch-heading">
+        <div class="gl-container">
+            <div class="gl-section-header gl-section-header-light">
+                <p class="gl-section-eyebrow gl-section-eyebrow-light">Developer Reference</p>
+                <h2 class="gl-section-title gl-section-title-light" id="arch-heading">
+                    Start here before writing code.
+                </h2>
+                <p class="gl-section-subtitle gl-section-subtitle-light">
+                    Four architecture documents define every decision made in this system.
+                    Junior developers — read these before opening a file.
+                </p>
+            </div>
+            <div class="gl-arch-grid" role="list">
+                @foreach (var doc in _archDocs)
+                {
+                    <a class="gl-arch-card" href="@doc.Href" role="listitem" target="_blank" rel="noopener">
+                        <div class="gl-arch-card-icon" aria-hidden="true">
+                            @((MarkupString)doc.IconSvg)
+                        </div>
+                        <div class="gl-arch-card-body">
+                            <h3 class="gl-arch-card-title">@doc.Title</h3>
+                            <p class="gl-arch-card-desc">@doc.Description</p>
+                        </div>
+                        <div class="gl-arch-card-arrow" aria-hidden="true">
+                            <svg viewBox="0 0 16 16" fill="currentColor">
+                                <path d="M3 8a.5.5 0 01.5-.5h7.293L8.146 4.854a.5.5 0 11.708-.708l4 4a.5.5 0 010 .708l-4 4a.5.5 0 11-.708-.708L10.793 8.5H3.5A.5.5 0 013 8z"/>
+                            </svg>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+
+    @* ── 7. FOOTER ── *@
+    <footer class="gl-footer" role="contentinfo">
+        <div class="gl-container">
+            <div class="gl-footer-inner">
+                <div class="gl-footer-brand">
+                    <svg class="gl-footer-logo-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 2L3 7V11.5C3 16.5 6.5 21.26 12 23C17.5 21.26 21 16.5 21 11.5V7L12 2Z" fill="#0F6CBD"/>
+                        <path d="M10.5 14.5L16 9L17 10L10.5 16.5L7 13L8 12L10.5 14.5Z" fill="white"/>
+                    </svg>
+                    <div>
+                        <div class="gl-footer-brand-name">GACS</div>
+                        <div class="gl-footer-brand-tagline">Gated Access Compliance Suite</div>
+                    </div>
+                </div>
+
+                <nav class="gl-footer-links" aria-label="Footer navigation">
+                    <div class="gl-footer-link-group">
+                        <p class="gl-footer-link-heading">Product</p>
+                        <a class="gl-footer-link" href="#features">Features</a>
+                        <a class="gl-footer-link" href="#surfaces">Portals</a>
+                        <a class="gl-footer-link" href="#architecture">Architecture</a>
+                    </div>
+                    <div class="gl-footer-link-group">
+                        <p class="gl-footer-link-heading">Compliance</p>
+                        <a class="gl-footer-link" href="docs/DATA-ARCHITECTURE.md">POPIA</a>
+                        <a class="gl-footer-link" href="docs/DATA-ARCHITECTURE.md">Data Retention</a>
+                        <a class="gl-footer-link" href="docs/MASTER-ARCHITECTURE.md">Security</a>
+                    </div>
+                    <div class="gl-footer-link-group">
+                        <p class="gl-footer-link-heading">Developers</p>
+                        <a class="gl-footer-link" href="docs/FRONTEND-ARCHITECTURE.md">Frontend</a>
+                        <a class="gl-footer-link" href="docs/BACKEND-ARCHITECTURE.md">Backend</a>
+                        <a class="gl-footer-link" href="ONBOARDING.md">Onboarding</a>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="gl-footer-bottom">
+                <p class="gl-footer-copy">
+                    &copy; @DateTime.Now.Year GACS — Gated Access Compliance Suite.
+                    Built on .NET 10, Blazor Server, MAUI, and Microsoft Azure.
+                </p>
+                <p class="gl-footer-stack">
+                    Fluent UI &nbsp;·&nbsp; Aspire &nbsp;·&nbsp; YARP &nbsp;·&nbsp; Wolverine &nbsp;·&nbsp; Dapper
+                </p>
+            </div>
+        </div>
     </footer>
 
 </div>
 
 @code {
+    // ── Callbacks — wire these in the consuming page (Home.razor) ──
     [Parameter] public EventCallback OnLogin { get; set; }
+    [Parameter] public EventCallback OnRequestDemo { get; set; }
 
-    private async Task OnLoginClick()
-    {
-        await OnLogin.InvokeAsync();
-    }
+    private bool _menuOpen;
 
-    private async Task ScrollToArchitecture()
-    {
-        // Scroll to architecture section; in a real app this would use JS interop
-        // For now, this serves as a navigation hook junior devs can wire up.
-    }
+    private async Task OnLoginClick()       => await OnLogin.InvokeAsync();
+    private async Task OnRequestDemoClick() => await OnRequestDemo.InvokeAsync();
+    private void ToggleMenu()               => _menuOpen = !_menuOpen;
 
-    private record SurfaceCard(
-        string Title,
-        string Description,
-        string Tech,
-        string Audience,
-        string IconSvg);
+    // ── Static data ──
 
-    private static readonly Dictionary<string, string> _surfaceIcons = new()
-    {
-        ["Admin & Compliance Portal"] =
-            "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">" +
-            "<path d=\"M20 2H4C2.9 2 2 2.9 2 4V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V4C22 2.9 21.1 2 20 2ZM20 18H4V4H20V18ZM18 6H6V12H18V6ZM18 14H6V16H18V14Z\" fill=\"currentColor\"/></svg>",
+    private static readonly string[] _trustLogos =
+        ["Microsoft Entra ID", "Azure SQL", "Azure Blob Storage", "OpenTelemetry"];
 
-        ["Visitor Self-Registration"] =
-            "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">" +
-            "<path d=\"M17 2H7C5.9 2 5 2.9 5 4V20C5 21.1 5.9 22 7 22H17C18.1 22 19 21.1 19 20V4C19 2.9 18.1 2 17 2ZM12 20C10.9 20 10 19.1 10 18C10 16.9 10.9 16 12 16C13.1 16 14 16.9 14 18C14 19.1 13.1 20 12 20ZM17 14H7V4H17V14Z\" fill=\"currentColor\"/></svg>",
+    private record StatItem(string Value, string Label);
+    private static readonly StatItem[] _stats =
+    [
+        new("500+",   "Estates Supported"),
+        new("50K+",   "Visitor Records / Month"),
+        new("< 2s",   "Average Gate Entry Time"),
+        new("100%",   "POPIA Audit Ready"),
+    ];
 
-        ["Guard Check-In App"] =
-            "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">" +
-            "<path d=\"M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 18H4V6H20V18ZM6 8H18V10H6V8ZM6 12H14V14H6V12Z\" fill=\"currentColor\"/></svg>",
+    private record Feature(string Title, string Description, string IconSvg);
+    private static readonly Feature[] _features =
+    [
+        new("AI Risk Scoring",
+            "Every visitor is scored in real-time using behavioural signals, historical patterns, and watchlist matching before the gate opens.",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M12 2a10 10 0 110 20A10 10 0 0112 2zm0 2a8 8 0 100 16A8 8 0 0012 4zm0 3a1 1 0 011 1v4.586l2.707 2.707a1 1 0 01-1.414 1.414l-3-3A1 1 0 0111 13V8a1 1 0 011-1z' fill='currentColor'/></svg>"),
 
-        ["Resident & Host Portal"] =
-            "<svg viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">" +
-            "<path d=\"M12 2L2 9V22H10V14H14V22H22V9L12 2ZM18 20H16V12H8V20H6V10L12 5.5L18 10V20Z\" fill=\"currentColor\"/></svg>"
-    };
+        new("POPIA Consent Engine",
+            "Structured consent capture with granular purposes, lawful basis recording, and automated retention countdown timers per data subject.",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"),
 
-    private readonly List<SurfaceCard> _surfaces = new()
-    {
+        new("QR Pre-Registration",
+            "Visitors register from any device before arrival. A time-limited QR code is issued and presented at the gate — no paper forms.",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M3 3h6v6H3V3zm2 2v2h2V5H5zm8-2h6v6h-6V3zm2 2v2h2V5h-2zM3 13h6v6H3v-6zm2 2v2h2v-2H5zm13-2h2v2h-2v-2zm-4 0h2v2h-2v-2zm4 4h2v4h-6v-2h4v-2zm-4 2h2v2h-2v-2z' fill='currentColor'/></svg>"),
+
+        new("Full Audit Trail",
+            "Every gate event, consent change, data access, and system action is written to an immutable, tamper-evident audit log with timestamps.",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"),
+
+        new("Multi-Tenant Architecture",
+            "Each estate is a fully isolated tenant with its own row-level security boundary. No estate can ever see another's data.",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"),
+
+        new("Real-Time Observability",
+            "OpenTelemetry traces, Prometheus metrics, and Loki logs flow to the Aspire dashboard and Grafana — production health visible in seconds.",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"),
+    ];
+
+    private record SurfaceCard(string Title, string Description, string Tech, string Audience, string IconColor, string IconSvg);
+    private static readonly SurfaceCard[] _surfaces =
+    [
         new("Admin & Compliance Portal",
-            "Property managers, information officers, and auditors manage sites, users, compliance scores, and audit trails.",
-            "Blazor Server", "Admin, IO, Auditor", _surfaceIcons["Admin & Compliance Portal"]),
+            "Property managers, information officers, and auditors manage sites, users, AI risk thresholds, compliance scores, and audit trails.",
+            "Blazor Server", "Admin · IO · Auditor", "gl-icon-blue",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"),
 
         new("Visitor Self-Registration",
-            "Visitors pre-register from their mobile browser, complete consent forms, and receive QR codes before arrival.",
-            "Blazor WASM", "Public Visitors", _surfaceIcons["Visitor Self-Registration"]),
+            "Visitors pre-register from their mobile browser, complete POPIA consent forms, upload ID documents, and receive QR codes before arrival.",
+            "Blazor WASM", "Public Visitors", "gl-icon-purple",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"),
 
         new("Guard Check-In App",
-            "Guards scan visitor QR codes, view AI risk scores, capture photos, and operate gates from rugged tablets.",
-            "MAUI Blazor Hybrid", "Guard, Operator", _surfaceIcons["Guard Check-In App"]),
+            "Guards scan QR codes, review AI risk scores, capture photographs, override access with documented justification, and control gates from ruggedised tablets.",
+            "MAUI Blazor Hybrid", "Guard · Operator", "gl-icon-green",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M12 2L3 7v4.5C3 16.5 6.5 21.26 12 23c5.5-1.74 9-6.5 9-11.5V7L12 2zm-1.5 12.5l-2.5-2.5 1-1 1.5 1.5 4-4 1 1-5 5z' fill='currentColor'/></svg>"),
 
         new("Resident & Host Portal",
-            "Residents authorise visitor pre-registrations, view access logs, and manage their household profiles.",
-            "Blazor WASM", "Resident, Host", _surfaceIcons["Resident & Host Portal"])
-    };
+            "Residents authorise pre-registrations, track active visitors, view access logs, and manage household profiles from any device.",
+            "Blazor WASM", "Resident · Host", "gl-icon-orange",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"),
+    ];
+
+    private record ArchDoc(string Title, string Description, string Href, string IconSvg);
+    private static readonly ArchDoc[] _archDocs =
+    [
+        new("Frontend Architecture",
+            "Design tokens, Blazor render modes, Fluent UI theming, component library structure, accessibility baseline, and responsive patterns.",
+            "docs/FRONTEND-ARCHITECTURE.md",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z' fill='currentColor'/></svg>"),
+
+        new("Backend Architecture",
+            "API gateway (YARP), Wolverine message bus, ErrorOr patterns, Hangfire jobs, Scalar API docs, versioning, and Entra ID security.",
+            "docs/BACKEND-ARCHITECTURE.md",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"),
+
+        new("Data Architecture",
+            "Azure SQL multi-tenant schema, row-level security, Redis topology, Blob Storage, Dapper patterns, and POPIA retention policies.",
+            "docs/DATA-ARCHITECTURE.md",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M4 7c0 1.657 3.582 3 8 3s8-1.343 8-3M4 7c0-1.657 3.582-3 8-3s8 1.343 8 3M4 7v5m16-5v5M4 12c0 1.657 3.582 3 8 3s8-1.343 8-3M4 12v5c0 1.657 3.582 3 8 3s8-1.343 8-3v-5' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>"),
+
+        new("Master Architecture",
+            "Full system topology, Aspire orchestration, technology decisions, environment strategy, security model, and the 12-step build order.",
+            "docs/MASTER-ARCHITECTURE.md",
+            "<svg viewBox='0 0 24 24' fill='none'><path d='M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>"),
+    ];
 }

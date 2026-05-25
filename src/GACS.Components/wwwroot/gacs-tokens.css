@@ -1,18 +1,47 @@
-/* GACS Design Tokens — Light Theme
+/* ============================================================
+   GACS Design Tokens — Light Theme
    Reference: FRONTEND-ARCHITECTURE.md Section 4.2
-   These CSS custom properties are applied on :root and override Fluent UI defaults. */
+
+   How to use:
+     - CSS: var(--colorBrandPrimary)
+     - C#:  GacsTokens.ColorBrandPrimary  (see Themes/GacsTokens.cs)
+
+   Override for dark mode by setting data-theme="dark" on <html>.
+   ============================================================ */
+
+/* Inter font is loaded via <link> in _Host.cshtml — NOT via @import here.
+   Using @import inside a CSS file blocks the parser in some browsers and
+   prevents the rest of this file from applying. Always load fonts as <link>. */
 
 :root {
-    /* Brand tokens */
-    --colorBrandPrimary: #0F6CBD;
-    --colorBrandSecondary: #0C3B5E;
-    --colorNeutralBackground: #FAFAFA;
-    --colorNeutralSurface: #FFFFFF;
-    --colorNeutralBorder: #E0E0E0;
-    --colorNeutralForeground: #242424;
-    --colorNeutralForegroundSubtle: #616161;
+    /* ── Typography ── */
+    --fontFamilyBase: 'Inter', 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --fontWeightRegular: 400;
+    --fontWeightMedium: 500;
+    --fontWeightSemibold: 600;
+    --fontWeightBold: 700;
+    --fontWeightExtraBold: 800;
 
-    /* Risk tokens */
+    /* ── Brand colours ── */
+    --colorBrandPrimary: #0F6CBD;       /* GACS blue — primary actions, links */
+    --colorBrandPrimaryHover: #0E5BA8;  /* Darker on hover */
+    --colorBrandLight: #EBF4FC;         /* Tinted blue background for badges, highlights */
+    --colorBrandSecondary: #0C3B5E;     /* Deep navy — hero gradient, sidebar */
+    --colorBrandDark: #040F1E;          /* Darkest navy — hero base, footers */
+
+    /* ── Neutral surface palette ── */
+    --colorNeutralBackground: #F8FAFC;  /* Page background */
+    --colorNeutralSurface: #FFFFFF;     /* Cards, panels */
+    --colorNeutralSurfaceAlt: #F1F5F9;  /* Alternate section bg */
+    --colorNeutralBorder: #E2E8F0;      /* Dividers, card borders */
+    --colorNeutralBorderStrong: #CBD5E1;
+
+    /* ── Text ── */
+    --colorNeutralForeground: #0F172A;        /* Primary text */
+    --colorNeutralForegroundSubtle: #64748B;  /* Secondary / caption text */
+    --colorNeutralForegroundMuted: #94A3B8;   /* Placeholder, disabled */
+
+    /* ── Risk traffic-light tokens ── */
     --colorRiskGreen: #107C10;
     --colorRiskGreenBackground: #DFF6DD;
     --colorRiskYellow: #835B00;
@@ -20,28 +49,57 @@
     --colorRiskRed: #A4262C;
     --colorRiskRedBackground: #FDE7E9;
 
-    /* Compliance tokens */
+    /* ── Compliance state tokens ── */
     --colorCompliant: #107C10;
     --colorNonCompliant: #A4262C;
     --colorWarning: #835B00;
 
-    /* Spacing scale — 4px grid */
+    /* ── Elevation / shadows ── */
+    --shadowXS: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadowS:  0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    --shadowM:  0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+    --shadowL:  0 8px 32px rgba(0, 0, 0, 0.10), 0 4px 12px rgba(0, 0, 0, 0.06);
+    --shadowXL: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.08);
+
+    /* ── Border radius ── */
+    --radiusS:  6px;
+    --radiusM:  10px;
+    --radiusL:  16px;
+    --radiusXL: 24px;
+    --radiusFull: 9999px;
+
+    /* ── Spacing — 4px grid ── */
     --spacingHorizontalXS: 4px;
-    --spacingHorizontalS: 8px;
-    --spacingHorizontalM: 16px;
-    --spacingHorizontalL: 24px;
+    --spacingHorizontalS:  8px;
+    --spacingHorizontalM:  16px;
+    --spacingHorizontalL:  24px;
     --spacingHorizontalXL: 32px;
+    --spacingHorizontalXXL: 48px;
     --spacingVerticalXS: 4px;
-    --spacingVerticalS: 8px;
-    --spacingVerticalM: 16px;
-    --spacingVerticalL: 24px;
+    --spacingVerticalS:  8px;
+    --spacingVerticalM:  16px;
+    --spacingVerticalL:  24px;
     --spacingVerticalXL: 32px;
+    --spacingVerticalXXL: 48px;
+
+    /* ── Animation ── */
+    --durationFast:   150ms;
+    --durationNormal: 250ms;
+    --durationSlow:   400ms;
+    --easingStandard: cubic-bezier(0.4, 0, 0.2, 1);
+    --easingDecelerate: cubic-bezier(0, 0, 0.2, 1);
 }
 
-/* Guard app dark theme overrides
-   Risk token values remain the same — green/yellow/red must be identifiable in all lighting. */
+/* ── Guard app / dark theme overrides ──
+   Risk colour values are intentionally shifted for dark-background contrast.
+   The green/yellow/red meaning MUST remain distinguishable in all lighting. */
 [data-theme="dark"] {
-    --colorRiskGreen: #54B054;
+    --colorNeutralBackground: #0F172A;
+    --colorNeutralSurface:    #1E293B;
+    --colorNeutralBorder:     #334155;
+    --colorNeutralForeground: #F1F5F9;
+    --colorNeutralForegroundSubtle: #94A3B8;
+    --colorRiskGreen:  #54B054;
     --colorRiskYellow: #C8A025;
-    --colorRiskRed: #D9464B;
+    --colorRiskRed:    #D9464B;
 }

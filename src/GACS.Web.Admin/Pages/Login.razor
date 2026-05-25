@@ -1,0 +1,35 @@
+@* ============================================================
+   Login.razor — Admin portal sign-in page at /login
+   Uses the LoginPage component from GACS.Components.
+
+   Auth TODO (wired by Steve / senior dev):
+     1. Install Microsoft.Identity.Web + Microsoft.Identity.Web.UI
+     2. Replace NavigateTo("/dashboard") with the Entra ID challenge:
+           Navigation.NavigateTo("MicrosoftIdentity/Account/SignIn", forceLoad: true)
+     3. Protect /dashboard with [Authorize] attribute
+   ============================================================ *@
+
+@page "/login"
+@inject NavigationManager Navigation
+
+<PageTitle>Sign In — GACS Admin Portal</PageTitle>
+
+<LoginPage OnSignIn="HandleSignIn" OnGoHome="GoHome" />
+
+@code {
+    /// <summary>
+    /// Called when the user clicks "Sign in with Microsoft".
+    /// TODO: Replace body with Microsoft.Identity.Web challenge redirect.
+    /// </summary>
+    private void HandleSignIn()
+    {
+        // Scaffold placeholder — redirects to dashboard.
+        // Production: Navigation.NavigateTo("MicrosoftIdentity/Account/SignIn", forceLoad: true);
+        Navigation.NavigateTo("/dashboard");
+    }
+
+    private void GoHome()
+    {
+        Navigation.NavigateTo("/");
+    }
+}
