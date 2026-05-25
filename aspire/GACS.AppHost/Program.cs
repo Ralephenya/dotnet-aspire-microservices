@@ -32,7 +32,7 @@ var loki = builder.AddContainer("loki", "grafana/loki", "3.5.0")
     .WithArgs("-config.file=/etc/loki/local-config.yaml")
     .WithBindMount(lokiConfig, "/etc/loki/local-config.yaml", isReadOnly: true)
     .WithHttpEndpoint(targetPort: 3100, name: "http", port: 3100)
-    .WithUrlForEndpoint("http", url => url.DisplayText = "Open Loki API")
+    // Note: Loki API is accessed through Grafana, not directly
     .WithLifetime(ContainerLifetime.Persistent);
 
 var grafanaProvisioning = Path.Combine(builder.AppHostDirectory,
@@ -59,7 +59,18 @@ var sqlPassword = builder.AddParameter("sql-password", secret: true);
 // 🗄️ SQL Server — Main Database
 // Stores: Users, visitors, incidents, audit logs, compliance records
 // Connection string is automatically injected into services that need it.
+//
+// 🔐 Password Configuration:
+// Default password: "Dev_Password1!" (from appsettings.json)
+// For production: Use user secrets or environment variables
+// See MASTER-ARCHITECTURE.md §Environments for details
+//
+// 📝 Environment Variables:
+// ACCEPT_EULA=Y — Required to accept SQL Server license terms
+// MSSQL_PID=Developer — Use Developer edition (free for local dev)
 var sql = builder.AddSqlServer("sql-server", password: sqlPassword)
+                 .WithEnvironment("ACCEPT_EULA", "Y")
+                 .WithEnvironment("MSSQL_PID", "Developer")
                  .WithDataVolume("gacs-sql-data")
                  .WithLifetime(ContainerLifetime.Persistent);
 
@@ -68,6 +79,12 @@ var gacsDb = sql.AddDatabase("gacsdb", databaseName: "GACS");
 // ⚡ Redis — Cache & Real-time
 // Used for: Session cache, real-time location data, rate limiting
 // Fast in-memory store for temporary data that doesn't need to persist.
+//
+// 🔒 TLS Security Note:
+// Aspire automatically enables TLS for Redis in local development.
+// This ensures secure communication between services and Redis.
+// Connection strings are automatically configured with TLS settings.
+// No manual appsettings configuration needed — Aspire handles it.
 var redis = builder.AddRedis("redis")
                    .WithDataVolume("gacs-redis-data")
                    .WithLifetime(ContainerLifetime.Persistent);
@@ -86,31 +103,22 @@ var blobStorage = storage.AddBlobs("blob-storage");
 
 // 🔐 Identity & Tenant API — Authentication Service
 // Handles: User login, JWT tokens, multi-tenant isolation, role management
-// API Docs (Scalar): http://localhost:5211/scalar/v1
+// API Docs (Scalar): Click the endpoint URL below
 var identityApi = builder.AddProject<Projects.GACS_IdentityTenant_Api>("identity-api")
                          .WithReference(gacsDb)
                          .WithReference(redis)
                          .WithReference(blobStorage)
-                         .WithUrlForEndpoint("http", url =>
-                         {
-                             url.Url = "http://localhost:5211/scalar/v1";
-                             url.DisplayText = "📖 API Documentation (Scalar)";
-                         })
+                         .WithExternalHttpEndpoints()
                          .WaitFor(sql)
                          .WaitFor(redis);
 
 // 🚪 API Gateway — Entry Point
 // Routes requests to the right service. All frontend calls go through here.
-// Health check: http://localhost:5142/health
+// Health check: Click the endpoint URL and append /health
 var gateway = builder.AddProject<Projects.GACS_Gateway>("gateway")
                      .WithReference(identityApi)
                      .WithReference(redis)
                      .WithExternalHttpEndpoints()
-                     .WithUrlForEndpoint("http", url =>
-                     {
-                         url.Url = "http://localhost:5142/health";
-                         url.DisplayText = "✅ Health Check";
-                     })
                      .WaitFor(identityApi);
 
 // ── Frontend Applications ────────────────────────────────────────────────────
@@ -119,14 +127,10 @@ var gateway = builder.AddProject<Projects.GACS_Gateway>("gateway")
 // 🖥️ Admin Portal — Management Interface
 // For: Property managers, Information Officers, Auditors
 // Features: Visitor management, compliance reports, user administration
+// Landing page: Click the endpoint URL below
 var webAdmin = builder.AddProject<Projects.GACS_Web_Admin>("admin-portal")
        .WithReference(gateway)
        .WithExternalHttpEndpoints()
-       .WithUrlForEndpoint("http", url =>
-       {
-           url.Url = "http://localhost:5162";
-           url.DisplayText = "🚀 Open Admin Portal";
-       })
        .WaitFor(gateway);
 
 // ═══════════════════════════════════════════════════════════════════════════════
