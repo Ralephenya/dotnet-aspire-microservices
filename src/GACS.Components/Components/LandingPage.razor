@@ -142,15 +142,7 @@
                 <span class="gacs-landing-component-label">RiskBadge — displays AI-generated visitor risk level</span>
             </div>
             <div class="gacs-landing-component-item">
-                <ComplianceScoreRing Score="87" SiteName="Greenstone Hills" />
-                <span class="gacs-landing-component-label">ComplianceScoreRing — POPIA posture visualisation</span>
-            </div>
-            <div class="gacs-landing-component-item">
-                <GateStatusIndicator State="GateStatusIndicator.GateState.Open" />
-                <span class="gacs-landing-component-label">GateStatusIndicator — real-time gate status via SignalR</span>
-            </div>
-            <div class="gacs-landing-component-item">
-                <RetentionCountdown DaysRemaining="12" TotalDays="30" />
+                <RetentionCountdown RetentionStartDate="DateTime.UtcNow.AddDays(-18)" RetentionExpiresAt="DateTime.UtcNow.AddDays(12)" />
                 <span class="gacs-landing-component-label">RetentionCountdown — days until auto-deletion</span>
             </div>
         </div>
