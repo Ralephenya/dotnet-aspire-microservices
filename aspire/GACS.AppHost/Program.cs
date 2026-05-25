@@ -104,11 +104,16 @@ var blobStorage = storage.AddBlobs("blob-storage");
 // 🔐 Identity & Tenant API — Authentication Service
 // Handles: User login, JWT tokens, multi-tenant isolation, role management
 // API Docs (Scalar): Click the endpoint URL below
+//
+// ⏱️ Startup Delay:
+// Added 30-second delay to ensure SQL Server is fully initialized before Hangfire tries to connect.
+// This prevents "BackgroundServerProcess is in the Failed state" errors during startup.
 var identityApi = builder.AddProject<Projects.GACS_IdentityTenant_Api>("identity-api")
                          .WithReference(gacsDb)
                          .WithReference(redis)
                          .WithReference(blobStorage)
                          .WithExternalHttpEndpoints()
+                         .WithEnvironment("ASPNETCORE_STARTUP_DELAY", "30")
                          .WaitFor(sql)
                          .WaitFor(redis);
 
