@@ -1,0 +1,16 @@
+@* Consent Card — displays ONE consent purpose for visitor to accept or decline
+   POPIA requires granular consent — never bundle multiple purposes into one card
+   Legal bases: Consent | Legitimate Interest | Legal Obligation
+   Reference: FRONTEND-ARCHITECTURE.md Section 5.3 *@
+
+@code {
+    [Parameter] public string PurposeTitle { get; set; } = string.Empty;
+    [Parameter] public string Explanation { get; set; } = string.Empty;
+    [Parameter] public string LegalBasis { get; set; } = "Consent";
+    [Parameter] public bool IsMandatory { get; set; }
+    [Parameter] public bool IsAccepted { get; set; }
+    [Parameter] public EventCallback<bool> IsAcceptedChanged { get; set; }
+
+    // TODO: If IsMandatory, show locked toggle with explanation — visitor cannot decline
+    // TODO: Implement rendering using Fluent UI components
+}

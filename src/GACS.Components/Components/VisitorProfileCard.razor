@@ -1,0 +1,21 @@
+@* Visitor Profile Card — shown to guard when a QR code is scanned
+   Contains: photo, name, purpose, host, risk badge, check-in time, action buttons
+   States: Loading, Loaded, Flagged, Denied, Approved
+   Reference: FRONTEND-ARCHITECTURE.md Section 5.2 *@
+
+@code {
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public string? PhotoUrl { get; set; }
+    [Parameter] public string FullName { get; set; } = string.Empty;
+    [Parameter] public string PurposeOfVisit { get; set; } = string.Empty;
+    [Parameter] public string HostName { get; set; } = string.Empty;
+    [Parameter] public int RiskScore { get; set; }
+    [Parameter] public bool IsRiskScoreLoading { get; set; }
+    [Parameter] public DateTime? CheckInTime { get; set; }
+    [Parameter] public string Status { get; set; } = "Pending";
+    [Parameter] public EventCallback OnApprove { get; set; }
+    [Parameter] public EventCallback OnDeny { get; set; }
+    [Parameter] public EventCallback OnEscalate { get; set; }
+
+    // TODO: Implement rendering using Fluent UI components and GateShell touch targets
+}

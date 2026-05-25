@@ -1,0 +1,47 @@
+/* GACS Design Tokens — Light Theme
+   Reference: FRONTEND-ARCHITECTURE.md Section 4.2
+   These CSS custom properties are applied on :root and override Fluent UI defaults. */
+
+:root {
+    /* Brand tokens */
+    --colorBrandPrimary: #0F6CBD;
+    --colorBrandSecondary: #0C3B5E;
+    --colorNeutralBackground: #FAFAFA;
+    --colorNeutralSurface: #FFFFFF;
+    --colorNeutralBorder: #E0E0E0;
+    --colorNeutralForeground: #242424;
+    --colorNeutralForegroundSubtle: #616161;
+
+    /* Risk tokens */
+    --colorRiskGreen: #107C10;
+    --colorRiskGreenBackground: #DFF6DD;
+    --colorRiskYellow: #835B00;
+    --colorRiskYellowBackground: #FFF4CE;
+    --colorRiskRed: #A4262C;
+    --colorRiskRedBackground: #FDE7E9;
+
+    /* Compliance tokens */
+    --colorCompliant: #107C10;
+    --colorNonCompliant: #A4262C;
+    --colorWarning: #835B00;
+
+    /* Spacing scale — 4px grid */
+    --spacingHorizontalXS: 4px;
+    --spacingHorizontalS: 8px;
+    --spacingHorizontalM: 16px;
+    --spacingHorizontalL: 24px;
+    --spacingHorizontalXL: 32px;
+    --spacingVerticalXS: 4px;
+    --spacingVerticalS: 8px;
+    --spacingVerticalM: 16px;
+    --spacingVerticalL: 24px;
+    --spacingVerticalXL: 32px;
+}
+
+/* Guard app dark theme overrides
+   Risk token values remain the same — green/yellow/red must be identifiable in all lighting. */
+[data-theme="dark"] {
+    --colorRiskGreen: #54B054;
+    --colorRiskYellow: #C8A025;
+    --colorRiskRed: #D9464B;
+}

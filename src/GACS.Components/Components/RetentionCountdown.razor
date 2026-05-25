@@ -1,0 +1,16 @@
+@* Retention Countdown — days remaining before a visitor record is auto-deleted
+   States: Normal, Warning (< 7 days), Expired (red, deletion overdue)
+   Reference: FRONTEND-ARCHITECTURE.md Section 5.6 *@
+
+@code {
+    [Parameter] public DateTime RetentionStartDate { get; set; }
+    [Parameter] public DateTime RetentionExpiresAt { get; set; }
+
+    private int DaysRemaining =>
+        Math.Max(0, (int)(RetentionExpiresAt - DateTime.UtcNow).TotalDays);
+
+    private bool IsWarning => DaysRemaining is > 0 and <= 7;
+    private bool IsExpired => DaysRemaining == 0;
+
+    // TODO: Implement progress bar + days remaining label using Fluent UI
+}

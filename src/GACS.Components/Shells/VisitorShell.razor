@@ -1,0 +1,37 @@
+@* Visitor Shell — used by: Visitor self-registration, Consent forms, Pre-registration link
+   Structure: Minimal header | Single-column content (max 480px) | Fixed bottom CTA
+   Mobile-first. Works on 320px screen on 3G.
+   Reference: FRONTEND-ARCHITECTURE.md Section 6 Shell 3 *@
+
+<div class="gacs-visitor-shell">
+    <header class="gacs-visitor-header">
+        <div class="gacs-visitor-logo">GACS</div>
+        @if (!string.IsNullOrEmpty(SiteName))
+        {
+            <div class="gacs-visitor-site">@SiteName</div>
+        }
+        @if (TotalSteps > 0)
+        {
+            <div class="gacs-step-indicator">Step @CurrentStep of @TotalSteps</div>
+        }
+    </header>
+
+    <main class="gacs-visitor-main">
+        @ChildContent
+    </main>
+
+    @if (CtaContent is not null)
+    {
+        <footer class="gacs-visitor-cta">
+            @CtaContent
+        </footer>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? CtaContent { get; set; }
+    [Parameter] public string SiteName { get; set; } = string.Empty;
+    [Parameter] public int CurrentStep { get; set; }
+    [Parameter] public int TotalSteps { get; set; }
+}

@@ -1,0 +1,34 @@
+@* Gate Shell — used by: Guard check-in app (MAUI Blazor Hybrid)
+   Structure: Minimal header | Full-screen content | Bottom action bar
+   Dark theme by default. All touch targets minimum 48x48px. Text minimum 16px.
+   Reference: FRONTEND-ARCHITECTURE.md Section 6 Shell 2 *@
+
+<div class="gacs-gate-shell" data-theme="dark">
+    <header class="gacs-gate-header">
+        <span class="gacs-gate-site-name">@SiteName</span>
+        <span class="gacs-gate-name">@GateName</span>
+        @if (IsSyncPending)
+        {
+            <span class="gacs-sync-indicator">Syncing...</span>
+        }
+    </header>
+
+    <main class="gacs-gate-main">
+        @ChildContent
+    </main>
+
+    @if (BottomBarContent is not null)
+    {
+        <footer class="gacs-gate-actions">
+            @BottomBarContent
+        </footer>
+    }
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? BottomBarContent { get; set; }
+    [Parameter] public string SiteName { get; set; } = string.Empty;
+    [Parameter] public string GateName { get; set; } = string.Empty;
+    [Parameter] public bool IsSyncPending { get; set; }
+}

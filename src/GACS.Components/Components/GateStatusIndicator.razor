@@ -1,0 +1,21 @@
+@* Gate Status Indicator — real-time status of a physical gate
+   States: Open, Closed, Processing, Alert (pulsing red), Offline
+   Driven by SignalR events from GateHub — subscribes in OnInitializedAsync
+   Reference: FRONTEND-ARCHITECTURE.md Section 5.5 *@
+
+@implements IAsyncDisposable
+
+@code {
+    [Parameter] public string GateId { get; set; } = string.Empty;
+    [Parameter] public string Status { get; set; } = "Closed";
+
+    // TODO: Inject HubConnection and subscribe to GateHub events
+    // TODO: Call StateHasChanged() on hub event — restore focus after update (WCAG)
+    // TODO: Unsubscribe in DisposeAsync — never skip or connections leak
+
+    public ValueTask DisposeAsync()
+    {
+        // TODO: Unsubscribe from GateHub and dispose HubConnection
+        return ValueTask.CompletedTask;
+    }
+}

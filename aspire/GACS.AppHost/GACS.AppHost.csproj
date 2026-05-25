@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <Sdk Name="Aspire.AppHost.Sdk" Version="13.3.5" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsAspireHost>true</IsAspireHost>
+    <UserSecretsId>d32baefd-b8ba-4be9-b199-99fe98e3e231</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" Version="13.3.5" />
+    <PackageReference Include="Aspire.Hosting.SqlServer" Version="13.3.5" />
+    <PackageReference Include="Aspire.Hosting.Redis" Version="13.3.5" />
+    <PackageReference Include="Aspire.Hosting.Azure.Storage" Version="13.3.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\GACS.Gateway\GACS.Gateway.csproj" />
+    <ProjectReference Include="..\..\src\GACS.IdentityTenant.Api\GACS.IdentityTenant.Api.csproj" />
+    <ProjectReference Include="..\..\src\GACS.Web.Admin\GACS.Web.Admin.csproj" />
+  </ItemGroup>
+
+</Project>

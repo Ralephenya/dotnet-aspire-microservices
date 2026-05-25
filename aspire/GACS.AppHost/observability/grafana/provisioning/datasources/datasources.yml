@@ -1,0 +1,28 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Grafana Data Sources Configuration — Junior Developer Guide
+# ═══════════════════════════════════════════════════════════════════════════════
+# These connect Grafana to Prometheus (metrics) and Loki (logs).
+# Docker container names are used as hostnames since they run in the same network.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+apiVersion: 1
+
+datasources:
+  # 📊 Prometheus — Time-series Metrics
+  # Contains: HTTP request rates, response times, error counts, CPU/memory usage
+  # Query examples: rate(http_requests_total[5m]), up, process_cpu_seconds_total
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+
+  # 📜 Loki — Application Logs
+  # Contains: Structured logs from all GACS services (console output)
+  # Query examples: {job="identity-api"}, {level="Error"}, |= "exception"
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://loki:3100
+    editable: false

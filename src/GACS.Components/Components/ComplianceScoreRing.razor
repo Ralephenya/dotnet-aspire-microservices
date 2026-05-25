@@ -1,0 +1,24 @@
+@* Compliance Score Ring — circular progress ring showing POPIA compliance posture
+   Color: green > 80, yellow 50-79, red < 50
+   Reference: FRONTEND-ARCHITECTURE.md Section 5.4 *@
+
+@code {
+    [Parameter] public int Score { get; set; }
+    [Parameter] public string SiteName { get; set; } = string.Empty;
+
+    private string GetLabel() => Score switch
+    {
+        > 80 => "Compliant",
+        > 50 => "Needs Attention",
+        _    => "At Risk"
+    };
+
+    private string GetColorClass() => Score switch
+    {
+        > 80 => "gacs-compliant",
+        > 50 => "gacs-warning",
+        _    => "gacs-non-compliant"
+    };
+
+    // TODO: Implement SVG circular progress ring using Score (0-100)
+}

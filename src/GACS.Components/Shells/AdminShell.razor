@@ -1,0 +1,32 @@
+@* Admin Shell — used by: Admin portal, IO portal, Compliance dashboard, Resident portal
+   Structure: Top nav bar | Sidebar nav (fixed, collapsible) | Scrollable content area
+   Reference: FRONTEND-ARCHITECTURE.md Section 6 Shell 1 *@
+
+<div class="gacs-admin-shell">
+    <header class="gacs-admin-topbar">
+        <div class="gacs-logo">GACS</div>
+        <div class="gacs-topbar-actions">
+            @TopBarContent
+        </div>
+    </header>
+
+    <div class="gacs-admin-body">
+        <nav class="gacs-admin-sidebar @(_sidebarCollapsed ? "collapsed" : "")">
+            @SidebarContent
+        </nav>
+
+        <main class="gacs-admin-main">
+            @ChildContent
+        </main>
+    </div>
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? SidebarContent { get; set; }
+    [Parameter] public RenderFragment? TopBarContent { get; set; }
+
+    private bool _sidebarCollapsed;
+
+    public void ToggleSidebar() => _sidebarCollapsed = !_sidebarCollapsed;
+}

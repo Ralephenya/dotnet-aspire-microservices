@@ -1,0 +1,16 @@
+@using GACS.Components.Shells
+
+<GateShell SiteName="@SiteName" GateName="@GateName">
+    <ChildContent>
+        <p>GACS Guard App — scaffold ready.</p>
+        <p>Build from Step 12 in MASTER-ARCHITECTURE.md.</p>
+    </ChildContent>
+    <BottomBarContent>
+        <button>Scan QR</button>
+    </BottomBarContent>
+</GateShell>
+
+@code {
+    private string SiteName = "Site Name";
+    private string GateName = "Gate 1";
+}

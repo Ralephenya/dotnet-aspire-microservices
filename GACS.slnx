@@ -1,0 +1,18 @@
+<Solution>
+  <Folder Name="/aspire/">
+    <Project Path="aspire/GACS.AppHost/GACS.AppHost.csproj" />
+    <Project Path="aspire/GACS.ServiceDefaults/GACS.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/GACS.Components/GACS.Components.csproj" />
+    <Project Path="src/GACS.Gateway/GACS.Gateway.csproj" />
+    <Project Path="src/GACS.IdentityTenant.Api/GACS.IdentityTenant.Api.csproj" />
+    <Project Path="src/GACS.IdentityTenant.Application/GACS.IdentityTenant.Application.csproj" />
+    <Project Path="src/GACS.IdentityTenant.Domain/GACS.IdentityTenant.Domain.csproj" />
+    <Project Path="src/GACS.IdentityTenant.Infrastructure/GACS.IdentityTenant.Infrastructure.csproj" />
+    <Project Path="src/GACS.Shared/GACS.Shared.csproj" />
+    <Project Path="src/GACS.Web.Admin/GACS.Web.Admin.csproj" />
+    <Project Path="src/GACS.Web.Resident/GACS.Web.Resident.csproj" />
+    <Project Path="src/GACS.Web.Visitor/GACS.Web.Visitor.csproj" />
+  </Folder>
+</Solution>

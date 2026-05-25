@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <SupportedPlatform Include="browser" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.8" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.14.2" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components.Icons" Version="4.14.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- TODO: Re-add GACS.Shared when components consume ApiResponse / PagedResult.
+         Deferred because GACS.Shared carries <FrameworkReference Include="Microsoft.AspNetCore.App" />
+         which cannot resolve to RuntimeIdentifier 'browser-wasm'. Solution: extract a
+         GACS.Shared.Contracts class library (no ASP.NET dep) for DTOs used in Blazor components. -->
+  </ItemGroup>
+
+</Project>
+

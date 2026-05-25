@@ -1,0 +1,42 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  # ═══════════════════════════════════════════════════════════════════════════════
+  # Prometheus Scraping Configuration — Junior Developer Guide
+  # ═══════════════════════════════════════════════════════════════════════════════
+  # This tells Prometheus where to collect metrics from.
+  # 'host.docker.internal' is a special DNS name that lets Docker containers
+  # reach your Windows host machine where the .NET services are running.
+  # ═══════════════════════════════════════════════════════════════════════════════
+
+  # 🔐 Identity API — Authentication & Users Service
+  # Port 5211 matches launchSettings.json in GACS.IdentityTenant.Api
+  - job_name: 'identity-api'
+    static_configs:
+      - targets: ['host.docker.internal:5211']
+        labels:
+          service: 'Identity API'
+          description: 'Authentication, JWT tokens, user management'
+    metrics_path: /metrics
+
+  # 🚪 API Gateway — Frontend Entry Point
+  # Port 5142 matches launchSettings.json in GACS.Gateway
+  - job_name: 'gateway'
+    static_configs:
+      - targets: ['host.docker.internal:5142']
+        labels:
+          service: 'API Gateway'
+          description: 'Routes requests to backend services'
+    metrics_path: /metrics
+
+  # 🖥️ Admin Portal — Blazor Server Frontend
+  # Port 5162 matches launchSettings.json in GACS.Web.Admin
+  - job_name: 'admin-portal'
+    static_configs:
+      - targets: ['host.docker.internal:5162']
+        labels:
+          service: 'Admin Portal'
+          description: 'Blazor Server management interface'
+    metrics_path: /metrics

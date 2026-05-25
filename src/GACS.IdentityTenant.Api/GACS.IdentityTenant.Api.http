@@ -1,0 +1,6 @@
+@GACS.IdentityTenant.Api_HostAddress = http://localhost:5211
+
+GET {{GACS.IdentityTenant.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

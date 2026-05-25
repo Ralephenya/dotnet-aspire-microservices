@@ -1,0 +1,30 @@
+@* Multilingual Form Wrapper — supports all 11 South African official languages
+   Language stored in browser localStorage. Default: English (en).
+   Falls back to English if translation key is missing.
+   Supported: en, af, zu, xh, st, tn, ts, ss, ve, nr, nd
+   Reference: FRONTEND-ARCHITECTURE.md Section 5.8 *@
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string SelectedLanguage { get; set; } = "en";
+    [Parameter] public EventCallback<string> SelectedLanguageChanged { get; set; }
+
+    public static readonly IReadOnlyList<(string Code, string Name)> SupportedLanguages =
+    [
+        ("en", "English"),
+        ("af", "Afrikaans"),
+        ("zu", "isiZulu"),
+        ("xh", "isiXhosa"),
+        ("st", "Sesotho"),
+        ("tn", "Setswana"),
+        ("ts", "Xitsonga"),
+        ("ss", "siSwati"),
+        ("ve", "Tshivenḓa"),
+        ("nr", "isiNdebele"),
+        ("nd", "isiNdebele (Northern)")
+    ];
+
+    // TODO: Render language selector (flag + language name)
+    // TODO: Load translations from JSON resource files by language code
+    // TODO: Persist selected language to localStorage via JS interop
+}

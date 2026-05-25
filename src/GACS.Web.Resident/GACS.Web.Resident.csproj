@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.8" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="10.0.8" />
+    <PackageReference Include="Microsoft.FluentUI.AspNetCore.Components" Version="4.14.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GACS.Components\GACS.Components.csproj" />
+    <!-- TODO: Add GACS.Shared reference when resident feature work begins.
+         GACS.Shared carries <FrameworkReference Include="Microsoft.AspNetCore.App" />
+         which cannot be resolved for RuntimeIdentifier 'browser-wasm'. A dedicated
+         GACS.Shared.Contracts (no ASP.NET dep) will be extracted at that point. -->
+  </ItemGroup>
+
+</Project>
+
+

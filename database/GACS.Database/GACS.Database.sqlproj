@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Name>GACS.Database</Name>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectVersion>4.1</ProjectVersion>
+    <ProjectGuid>{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}</ProjectGuid>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
+    <OutputType>Database</OutputType>
+    <RootPath></RootPath>
+    <RootNamespace>GACS.Database</RootNamespace>
+    <AssemblyName>GACS.Database</AssemblyName>
+    <ModelCollation>SQL_Latin1_General_CP1_CI_AS</ModelCollation>
+    <DefaultFileStructure>BySchemaAndSchemaObjectType</DefaultFileStructure>
+    <DeployToDatabase>True</DeployToDatabase>
+    <TargetConnectionString></TargetConnectionString>
+    <TargetDatabase></TargetDatabase>
+    <SccProjectName></SccProjectName>
+    <SccProvider></SccProvider>
+    <SccAuxPath></SccAuxPath>
+    <SccLocalPath></SccLocalPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Schemas\" />
+    <Folder Include="Schemas\identity\" />
+    <Folder Include="Schemas\consent\" />
+    <Folder Include="Schemas\visitor\" />
+    <Folder Include="Schemas\compliance\" />
+    <Folder Include="Schemas\audit\" />
+    <Folder Include="StoredProcedures\" />
+    <Folder Include="StoredProcedures\Identity\" />
+    <Folder Include="StoredProcedures\Consent\" />
+    <Folder Include="StoredProcedures\Visitor\" />
+    <Folder Include="StoredProcedures\Audit\" />
+    <Folder Include="Templates\" />
+  </ItemGroup>
+</Project>

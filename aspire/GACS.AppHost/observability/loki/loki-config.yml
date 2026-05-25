@@ -1,0 +1,62 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Loki Configuration — Junior Developer Guide
+# ═══════════════════════════════════════════════════════════════════════════════
+# Loki is a log aggregation system. It collects logs from all GACS services
+# running in Docker and makes them searchable. Think of it as a Google for
+# your application logs.
+#
+# 💡 How it works:
+# - Services send logs to Loki via HTTP
+# - Logs are stored in chunks on the filesystem
+# - Grafana queries Loki to display logs in dashboards
+#
+# 🔍 Common queries in Grafana:
+# - {job="identity-api"} — All logs from the Identity API
+# - {level="Error"} — Only error-level logs
+# - |= "password" — Logs containing the word "password"
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# No authentication needed for local development
+auth_enabled: false
+
+# HTTP API port — Grafana connects here to fetch logs
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+# Storage configuration — where logs are kept
+# Using local filesystem storage (good for development, not for production)
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /tmp/loki
+  storage:
+    filesystem:
+      chunks_directory: /tmp/loki/chunks      # Actual log data
+      rules_directory: /tmp/loki/rules       # Alert rules (if configured)
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+# Query caching — makes repeated searches faster
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
+# Database schema for log indexing
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+# Alertmanager integration (not used in local dev)
+ruler:
+  alertmanager_url: http://localhost:9093

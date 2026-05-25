@@ -1,0 +1,34 @@
+@* Risk Badge — displays AI-generated risk level for a visitor
+   States: Green (0-30), Yellow (31-60), Red (61-100), Pending (loading)
+   Color is NEVER the only indicator — always show a text label alongside
+   Reference: FRONTEND-ARCHITECTURE.md Section 5.1 *@
+
+@if (IsLoading)
+{
+    <span class="gacs-risk-badge gacs-risk-pending">Assessing...</span>
+}
+else
+{
+    <span class="gacs-risk-badge @GetBadgeClass()" aria-label="Risk level: @GetLabel()">
+        @GetLabel()
+    </span>
+}
+
+@code {
+    [Parameter] public int RiskScore { get; set; }
+    [Parameter] public bool IsLoading { get; set; }
+
+    private string GetBadgeClass() => RiskScore switch
+    {
+        <= 30 => "gacs-risk-green",
+        <= 60 => "gacs-risk-yellow",
+        _     => "gacs-risk-red"
+    };
+
+    private string GetLabel() => RiskScore switch
+    {
+        <= 30 => "Low Risk",
+        <= 60 => "Verify Identity",
+        _     => "High Risk"
+    };
+}

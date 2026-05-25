@@ -1,0 +1,6 @@
+@GACS.Gateway_HostAddress = http://localhost:5142
+
+GET {{GACS.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,13 @@
+@* AI Coaching Panel — shown on guard app when risk score is Yellow or Red
+   Contains: risk summary sentence, verification checklist, dismiss button (logged for audit)
+   Only visible in the Guard app — never in admin portal or visitor-facing surfaces
+   Reference: FRONTEND-ARCHITECTURE.md Section 5.7 *@
+
+@code {
+    [Parameter] public string RiskSummary { get; set; } = string.Empty;
+    [Parameter] public IEnumerable<string> VerificationSteps { get; set; } = [];
+    [Parameter] public EventCallback OnDismissed { get; set; }
+
+    // Guard must confirm they have read this before dismissing — logged to audit
+    // TODO: When dismissed, call OnDismissed which triggers an audit log entry
+}
