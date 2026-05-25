@@ -15,6 +15,10 @@ var builder = DistributedApplication.CreateBuilder(args);
 var prometheusConfig = Path.Combine(builder.AppHostDirectory,
     "observability", "prometheus", "prometheus.yml");
 
+// 📊 Prometheus — Metrics Collector
+// What it does: Collects performance metrics (CPU, memory, request counts) from all services
+// Why it matters: Helps you identify slow services, memory leaks, and performance bottlenecks
+// How to use: Click the URL to view metrics graphs and query service performance
 var prometheus = builder.AddContainer("prometheus", "prom/prometheus", "v3.4.0")
     .WithArgs("--config.file=/etc/prometheus/prometheus.yml",
               "--storage.tsdb.path=/prometheus",
@@ -22,29 +26,37 @@ var prometheus = builder.AddContainer("prometheus", "prom/prometheus", "v3.4.0")
               "--web.console.templates=/usr/share/prometheus/consoles")
     .WithBindMount(prometheusConfig, "/etc/prometheus/prometheus.yml", isReadOnly: true)
     .WithHttpEndpoint(targetPort: 9090, name: "http", port: 9090)
-    .WithUrlForEndpoint("http", url => url.DisplayText = "Open Prometheus UI")
+    .WithUrlForEndpoint("http", url => url.DisplayText = "📊 View Metrics Dashboard")
     .WithLifetime(ContainerLifetime.Persistent);
 
 var lokiConfig = Path.Combine(builder.AppHostDirectory,
     "observability", "loki", "loki-config.yml");
 
+// 📝 Loki — Log Aggregator
+// What it does: Collects and stores logs from all services in one place
+// Why it matters: When something breaks, you need to see the error messages
+// How to use: Access logs through Grafana (see below) — click Grafana URL, then Explore
 var loki = builder.AddContainer("loki", "grafana/loki", "3.5.0")
     .WithArgs("-config.file=/etc/loki/local-config.yaml")
     .WithBindMount(lokiConfig, "/etc/loki/local-config.yaml", isReadOnly: true)
     .WithHttpEndpoint(targetPort: 3100, name: "http", port: 3100)
-    // Note: Loki API is accessed through Grafana, not directly
+    // Note: Loki has no UI — access logs through Grafana's Explore panel
     .WithLifetime(ContainerLifetime.Persistent);
 
 var grafanaProvisioning = Path.Combine(builder.AppHostDirectory,
     "observability", "grafana", "provisioning");
 
+// 📈 Grafana — Visualization Dashboard
+// What it does: Shows pretty charts and graphs from Prometheus metrics and Loki logs
+// Why it matters: Easier to understand data than raw numbers or log text
+// How to use: Click the URL to see dashboards. Use "Explore" to search logs or build custom queries
 var grafana = builder.AddContainer("grafana", "grafana/grafana", "12.0.1")
     .WithEnvironment("GF_AUTH_ANONYMOUS_ENABLED", "true")
     .WithEnvironment("GF_AUTH_ANONYMOUS_ORG_ROLE", "Admin")
     .WithEnvironment("GF_AUTH_DISABLE_LOGIN_FORM", "true")
     .WithBindMount(grafanaProvisioning, "/etc/grafana/provisioning", isReadOnly: true)
     .WithHttpEndpoint(targetPort: 3000, name: "http", port: 3000)
-    .WithUrlForEndpoint("http", url => url.DisplayText = "Open Grafana (No login required)")
+    .WithUrlForEndpoint("http", url => url.DisplayText = "📈 Open Grafana Dashboard")
     .WithLifetime(ContainerLifetime.Persistent);
 
 // ── Data & Caching Infrastructure ──────────────────────────────────────────
@@ -57,7 +69,8 @@ var grafana = builder.AddContainer("grafana", "grafana/grafana", "12.0.1")
 var sqlPassword = builder.AddParameter("sql-password", secret: true);
 
 // 🗄️ SQL Server — Main Database
-// Stores: Users, visitors, incidents, audit logs, compliance records
+// What it does: Stores all persistent data (users, visitors, incidents, audit logs, compliance records)
+// Why it matters: Without this, no data would be saved when you restart the application
 // Connection string is automatically injected into services that need it.
 //
 // 🔐 Password Configuration:
@@ -77,8 +90,9 @@ var sql = builder.AddSqlServer("sql-server", password: sqlPassword)
 var gacsDb = sql.AddDatabase("gacsdb", databaseName: "GACS");
 
 // ⚡ Redis — Cache & Real-time
-// Used for: Session cache, real-time location data, rate limiting
-// Fast in-memory store for temporary data that doesn't need to persist.
+// What it does: Fast in-memory store for temporary data (sessions, real-time location updates, rate limiting)
+// Why it matters: Much faster than database for data that changes frequently or doesn't need to persist
+// Data here is temporary — it's cleared when you stop the container
 //
 // 🔒 TLS Security Note:
 // Aspire automatically enables TLS for Redis in local development.
@@ -90,7 +104,8 @@ var redis = builder.AddRedis("redis")
                    .WithLifetime(ContainerLifetime.Persistent);
 
 // ☁️ Azure Storage Emulator — Blob Storage
-// Used for: Visitor photos, documents, export files
+// What it does: Stores files (visitor photos, documents, export files) like cloud storage
+// Why it matters: Files are too big for the database — need specialized storage
 // Runs locally as an emulator (Azurite) — no Azure account needed for dev.
 var storage = builder.AddAzureStorage("azure-storage")
                      .RunAsEmulator();
@@ -102,8 +117,9 @@ var blobStorage = storage.AddBlobs("blob-storage");
 // They start automatically and connect to databases automatically.
 
 // 🔐 Identity & Tenant API — Authentication Service
-// Handles: User login, JWT tokens, multi-tenant isolation, role management
-// API Docs (Scalar): Click the endpoint URL below
+// What it does: Handles user login, JWT tokens, multi-tenant isolation, role management
+// Why it matters: Without this, users can't log in or access the system
+// API Docs: Click the endpoint URL to see all available API endpoints (Scalar)
 //
 // ⏱️ Startup Delay:
 // Added 30-second delay to ensure SQL Server is fully initialized before Hangfire tries to connect.
@@ -118,8 +134,9 @@ var identityApi = builder.AddProject<Projects.GACS_IdentityTenant_Api>("identity
                          .WaitFor(redis);
 
 // 🚪 API Gateway — Entry Point
-// Routes requests to the right service. All frontend calls go through here.
-// Health check: Click the endpoint URL and append /health
+// What it does: Routes requests to the right service (Identity API, etc.)
+// Why it matters: Frontends don't need to know which service handles what — gateway handles routing
+// Health check: Click the endpoint URL and append /health to check if gateway is running
 var gateway = builder.AddProject<Projects.GACS_Gateway>("gateway")
                      .WithReference(identityApi)
                      .WithReference(redis)
@@ -130,9 +147,10 @@ var gateway = builder.AddProject<Projects.GACS_Gateway>("gateway")
 // These are the user interfaces that people interact with.
 
 // 🖥️ Admin Portal — Management Interface
-// For: Property managers, Information Officers, Auditors
+// What it does: Web app for property managers, Information Officers, and Auditors
+// Why it matters: This is where users manage visitors, view compliance reports, and administer the system
 // Features: Visitor management, compliance reports, user administration
-// Landing page: Click the endpoint URL below
+// Landing page: Click the endpoint URL to open the admin portal in your browser
 var webAdmin = builder.AddProject<Projects.GACS_Web_Admin>("admin-portal")
        .WithReference(gateway)
        .WithExternalHttpEndpoints()
